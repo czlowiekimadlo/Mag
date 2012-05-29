@@ -11,12 +11,12 @@ TARGET = Mag
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    viewwidget.cpp \
-    trackball.cpp
+        src/mainwindow.cpp \
+    src/viewwidget.cpp \
+    src/solidobject.cpp
 
-HEADERS  += mainwindow.h \
-    viewwidget.h \
-    trackball.h
+HEADERS  += src/mainwindow.h \
+    src/viewwidget.h \
+    src/solidobject.h
 
-FORMS    += mainwindow.ui
+FORMS    += src/mainwindow.ui
