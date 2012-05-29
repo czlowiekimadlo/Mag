@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     ViewWidget vWidget;
 
-    vWidget.loadModel("c:\\Users\\Hrabia Quak Metzger\\Dropbox\\Magisterka\\gl\\cube.obj");
+    vWidget.loadModel("cube.obj");
     vWidget.resize(800, 600);
     w.setCentralWidget(&vWidget);
 

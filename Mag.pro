@@ -20,3 +20,5 @@ HEADERS  += src/mainwindow.h \
     src/solidobject.h
 
 FORMS    += src/mainwindow.ui
+
+LIBS     += -lGLU

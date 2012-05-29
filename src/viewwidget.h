@@ -4,6 +4,7 @@
 #include <QGLWidget>
 #include <QMouseEvent>
 #include <iostream>
+#include <GL/glu.h>
 #include "solidobject.h"
 
 class ViewWidget : public QGLWidget
