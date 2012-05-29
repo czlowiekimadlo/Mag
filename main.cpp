@@ -7,7 +7,14 @@ int main(int argc, char *argv[])
     MainWindow w;
     ViewWidget vWidget;
 
-    vWidget.loadModel("cube.obj");
+    if (argc > 1)
+    {
+        vWidget.loadModel(argv[1]);
+    }
+    else
+    {
+        vWidget.loadModel("");
+    }
     vWidget.resize(800, 600);
     w.setCentralWidget(&vWidget);
 

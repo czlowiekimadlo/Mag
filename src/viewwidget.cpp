@@ -66,6 +66,15 @@ void ViewWidget::resizeGL(int w, int h)
 
 void ViewWidget::loadModel(QString fileName)
 {
+    if (fileName.length() == 0)
+    {
+        fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
+                                                "",
+                                                tr("Object (*.obj)"));
+    }
+    if (fileName.length() == 0) {
+        exit(0);
+    }
     this->object.loadModel(fileName);
 }
 
@@ -154,11 +163,6 @@ void ViewWidget::mousePressEvent(QMouseEvent *e)
 {
     this->lastX = e->x();
     this->lastY = e->y();
-}
-
-void ViewWidget::mouseReleaseEvent(QMouseEvent *e)
-{
-
 }
 
 void ViewWidget::keyPressEvent(QKeyEvent *e)

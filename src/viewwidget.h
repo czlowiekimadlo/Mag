@@ -3,6 +3,7 @@
 
 #include <QGLWidget>
 #include <QMouseEvent>
+#include <QFileDialog>
 #include <iostream>
 #include <GL/glu.h>
 #include "solidobject.h"
@@ -32,7 +33,6 @@ protected:
     void drawModel();
     void drawBoundingBox();
 
-    void mouseReleaseEvent(QMouseEvent *);
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);
     void keyPressEvent(QKeyEvent *);
