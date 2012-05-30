@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <iostream>
 #include <GL/glu.h>
+#include <math.h>
 #include "solidobject.h"
 
 class ViewWidget : public QGLWidget
@@ -26,7 +27,7 @@ protected:
     SolidObject object;
 
     int lastX, lastY;
-    double angleX, angleY, distance;
+    double angleX, angleY, angleZ, distance;
     int width, height;
 
     void drawAxles();

@@ -5,7 +5,7 @@ ViewWidget::ViewWidget() : QGLWidget()
 {
     this->setFocusPolicy(Qt::ClickFocus);
 
-    this->angleX = this->angleY = 0.0;
+    this->angleX = this->angleY = this->angleZ = 0.0;
     this->width = this->height = 1;
     this->distance = 0.0;
 
@@ -21,7 +21,7 @@ void ViewWidget::initializeGL()
 {
     glDisable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
-    glDisable(GL_COLOR_MATERIAL);
+    glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_POLYGON_SMOOTH);
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
@@ -32,10 +32,9 @@ void ViewWidget::initializeGL()
 void ViewWidget::paintGL()
 {
     glMatrixMode(GL_PROJECTION);
-    glRotatef((360.0 * this->angleX) / 3.14, 0, 1, 0);
-    glRotatef((360.0 * this->angleY) / 3.14, 0, 0, 1);
-    //glTranslatef(this->distance, this->distance, this->distance);
-    //this->distance = 0.0;
+    glRotatef((360.0 * this->angleX) / 3.14, 1, 0, 0);
+    glRotatef((360.0 * this->angleY) / 3.14, 0, 1, 0);
+    glRotatef((360.0 * this->angleZ) / 3.14, 0, 0, 1);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -59,7 +58,6 @@ void ViewWidget::resizeGL(int w, int h)
     glLoadIdentity();
     gluPerspective(45.0, 1.0, 0.1, 100.0);
     gluLookAt(10.0, 10.0, 10.0,  0.0, 0.0, 0.0,  0.0, 1.0, 0.0);
-    //gluOrtho2D(0, (GLint)w, 0, (GLint)h);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -84,8 +82,9 @@ void ViewWidget::drawModel()
     float * vertex;
 
     for (int i = 0; i < this->object.faces.size(); i++) {
-        glColor3f((float)i / (float)this->object.faces.size(),0,0);
-        glBegin(GL_POLYGON);
+        //glColor3f((float)i / (float)this->object.faces.size(),0,0);
+        glColor3f(255.0, 0, 0);
+        glBegin(GL_LINE_LOOP);
         face = this->object.faces.at(i);
         for (int j = 0; j < face->size(); j++) {
             vertex = this->object.vertices.at(face->at(j) - 1);
@@ -129,29 +128,34 @@ void ViewWidget::drawAxles()
 
 void ViewWidget::mouseMoveEvent(QMouseEvent *e)
 {
-    if(e->buttons() & Qt::RightButton & Qt::LeftButton)
+    double distance;
+    distance = e->x() - this->lastX;
+
+    if(e->buttons() == (Qt::RightButton | Qt::LeftButton))
     {
         this->angleX = 0.0;
         this->angleY = 0.0;
-        this->distance += (double)(e->x() - this->lastX) * (double)this->width / 10.0;
+        this->angleZ = distance / (double)this->width;
         this->lastX = e->x();
         this->lastY = e->y();
 
         this->updateGL();
     }
-    else if(e->buttons() & Qt::LeftButton)
+    else if(e->buttons() == Qt::LeftButton)
     {
-        this->angleX = (double)(e->x() - this->lastX) / (double)this->width;
+        this->angleX = distance / (double)this->width;
         this->angleY = 0.0;
+        this->angleZ = 0.0;
         this->lastX = e->x();
         this->lastY = e->y();
 
         this->updateGL();
     }
-    else if(e->buttons() & Qt::RightButton)
+    else if(e->buttons() == Qt::RightButton)
     {
         this->angleX = 0.0;
-        this->angleY = (double)(this->lastY - e->y()) / (double)this->height;
+        this->angleY = distance / (double)this->width;
+        this->angleZ = 0.0;
         this->lastX = e->x();
         this->lastY = e->y();
 
@@ -176,6 +180,9 @@ void ViewWidget::keyPressEvent(QKeyEvent *e)
         case Qt::Key_B:
             this->showBoundingBox = !this->showBoundingBox;
             this->updateGL();
+            break;
+        case Qt::Key_Escape:
+            exit(0);
             break;
         default:
             break;
