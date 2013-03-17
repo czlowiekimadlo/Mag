@@ -1,3 +1,5 @@
+#define CGAL_DISABLE_ROUNDING_MATH_CHECK
+
 #include <QtGui/QApplication>
 #include "src/mainwindow.h"
 

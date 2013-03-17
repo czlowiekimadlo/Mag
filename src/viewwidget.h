@@ -21,6 +21,11 @@ public:
 
     bool showAxles;
     bool showBoundingBox;
+    bool showSuperTetra;
+    bool showTriangulation;
+    bool showTriangulationNodes;
+    bool showVoronoi;
+    int voronoiCell;
 
 
 protected:
@@ -33,6 +38,10 @@ protected:
     void drawAxles();
     void drawModel();
     void drawBoundingBox();
+    void drawRandomPoints();
+    void drawSuperTetra();
+    void drawTriangulation();
+    void drawVoronoi();
 
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);

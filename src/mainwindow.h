@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTime>
 #include "viewwidget.h"
 
 namespace Ui {

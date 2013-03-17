@@ -11,6 +11,11 @@ ViewWidget::ViewWidget() : QGLWidget()
 
     this->showAxles = false;
     this->showBoundingBox = false;
+    this->showSuperTetra = false;
+    this->showTriangulation = false;
+    this->showTriangulationNodes = false;
+    this->showVoronoi = false;
+    this->voronoiCell = 0;
 }
 
 ViewWidget::~ViewWidget()
@@ -43,6 +48,10 @@ void ViewWidget::paintGL()
 
     if (this->showAxles) this->drawAxles();
     if (this->showBoundingBox) this->drawBoundingBox();
+    if (this->showSuperTetra) this->drawSuperTetra();
+    else if (this->showTriangulation) this->drawTriangulation();
+    if (this->showVoronoi) this->drawVoronoi();
+    this->drawRandomPoints();
     this->drawModel();
 
     glFlush();
@@ -111,6 +120,64 @@ void ViewWidget::drawBoundingBox()
     }
 }
 
+void ViewWidget::drawSuperTetra()
+{
+    QList<int> * face;
+    float * vertex;
+
+    for (int i = 0; i < this->object.superTetraFaces.size(); i++) {
+        glColor3f(255.0, 255.0,0);
+        glBegin(GL_LINE_LOOP);
+        face = this->object.superTetraFaces.at(i);
+        for (int j = 0; j < face->size(); j++) {
+            vertex = this->object.superTetraVertices.at(face->at(j) - 1);
+            glVertex3f(vertex[0], vertex[1], vertex[2]);
+        }
+        glEnd();
+    }
+}
+
+void ViewWidget::drawTriangulation() {
+    QList<int> * face;
+    float * vertex;
+
+    for (int i = 0; i < this->object.triangulationFaces.size(); i++) {
+        if (this->object.triangulationWallsUsage.at(i) == 0) continue;
+        glColor3f(255.0, 255.0,0);
+        glBegin(GL_LINE_LOOP);
+        face = this->object.triangulationFaces.at(i);
+        for (int j = 0; j < face->size(); j++) {
+            vertex = this->object.triangulationVertices.at(face->at(j) - 1);
+            glVertex3f(vertex[0], vertex[1], vertex[2]);
+        }
+        glEnd();
+    }
+
+    if (!this->showTriangulationNodes) return;
+
+    for (int i = 0; i < this->object.triangulationCells.size(); i++) {
+        if (this->object.triangulationCells.at(i) == NULL) continue;
+        glBegin(GL_LINES);
+        glColor3f(0, 255.0, 0);
+        glVertex3f(this->object.triangulationCells.at(i)->center[0], this->object.triangulationCells.at(i)->center[1], this->object.triangulationCells.at(i)->center[2]);
+        glVertex3f(this->object.triangulationCells.at(i)->v1[0], this->object.triangulationCells.at(i)->v1[1], this->object.triangulationCells.at(i)->v1[2]);
+
+        glVertex3f(this->object.triangulationCells.at(i)->center[0], this->object.triangulationCells.at(i)->center[1], this->object.triangulationCells.at(i)->center[2]);
+        glVertex3f(this->object.triangulationCells.at(i)->v2[0], this->object.triangulationCells.at(i)->v2[1], this->object.triangulationCells.at(i)->v2[2]);
+
+        glVertex3f(this->object.triangulationCells.at(i)->center[0], this->object.triangulationCells.at(i)->center[1], this->object.triangulationCells.at(i)->center[2]);
+        glVertex3f(this->object.triangulationCells.at(i)->v3[0], this->object.triangulationCells.at(i)->v3[1], this->object.triangulationCells.at(i)->v3[2]);
+
+        glVertex3f(this->object.triangulationCells.at(i)->center[0], this->object.triangulationCells.at(i)->center[1], this->object.triangulationCells.at(i)->center[2]);
+        glVertex3f(this->object.triangulationCells.at(i)->v4[0], this->object.triangulationCells.at(i)->v4[1], this->object.triangulationCells.at(i)->v4[2]);
+        glEnd();
+    }
+}
+
+void ViewWidget::drawVoronoi() {
+
+}
+
 void ViewWidget::drawAxles()
 {
     glBegin(GL_LINES);
@@ -123,6 +190,17 @@ void ViewWidget::drawAxles()
     glColor3f(0,0,1);
     glVertex3f(0, 0, 0);
     glVertex3f(0, 0, 10);
+    glEnd();
+}
+
+void ViewWidget::drawRandomPoints() {
+    if (this->object.randomPoints.empty()) return;
+
+    glBegin(GL_POINTS);
+    glColor3f(1,0,1);
+    for (QList<float *>::iterator i = this->object.randomPoints.begin(); i != this->object.randomPoints.end(); i++) {
+        glVertex3f((*i)[0], (*i)[1], (*i)[2]);
+    }
     glEnd();
 }
 
@@ -141,7 +219,7 @@ void ViewWidget::mouseMoveEvent(QMouseEvent *e)
 
         this->updateGL();
     }
-    else if(e->buttons() == Qt::LeftButton)
+    else if(e->buttons() == Qt::RightButton)
     {
         this->angleX = distance / (double)this->width;
         this->angleY = 0.0;
@@ -151,7 +229,7 @@ void ViewWidget::mouseMoveEvent(QMouseEvent *e)
 
         this->updateGL();
     }
-    else if(e->buttons() == Qt::RightButton)
+    else if(e->buttons() == Qt::LeftButton)
     {
         this->angleX = 0.0;
         this->angleY = distance / (double)this->width;
@@ -179,6 +257,39 @@ void ViewWidget::keyPressEvent(QKeyEvent *e)
             break;
         case Qt::Key_B:
             this->showBoundingBox = !this->showBoundingBox;
+            this->updateGL();
+            break;
+        case Qt::Key_C:
+            this->object.destroyRandomPoints();
+            this->updateGL();
+            break;
+        case Qt::Key_R:
+            this->voronoiCell = 0;
+            this->object.generateRandomPoints(2);
+            this->object.createTriangulation();
+            this->object.createVoronoi();
+            this->updateGL();
+            break;
+        case Qt::Key_T:
+            this->showSuperTetra = !this->showSuperTetra;
+            this->showTriangulation = false;
+            this->updateGL();
+            break;
+        case Qt::Key_U:
+            if (this->object.vCells.size() > 0) {
+                this->showVoronoi = true;
+                this->voronoiCell++;
+                this->voronoiCell = this->voronoiCell % this->object.vCells.size();
+                this->updateGL();
+            }
+            break;
+        case Qt::Key_Y:
+            this->showTriangulation = !this->showTriangulation;
+            this->showSuperTetra = false;
+            this->updateGL();
+            break;
+        case Qt::Key_H:
+            this->showTriangulationNodes = !this->showTriangulationNodes;
             this->updateGL();
             break;
         case Qt::Key_Escape:
