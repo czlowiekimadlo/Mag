@@ -1,0 +1,66 @@
+
+
+Podział siatki za pomocą płaszczyzny.
+
+Płaszczyzna zdefiniowana jako punkt i wektor, wyliczone równanie tej płaszczyzny.
+
+Siatka składa się ze ścian, każda ściana to lista skierowanych krawędzi. Skierowana krawędź posiada punkt początkowy oraz wskaźnik na następną krawędź. Lista ta jest zapętlona.
+Dodatkowo istnieje lista krawędzi, każda krawędź posiada wskaźniki na dwie krawędzie skierowane używające tych samych punktów i skierowane odwrotnie wzdlędem siebie.
+
+Aby stworzyć komórkę diagramu voronoi, iteracyjnie kroimy całą bryłę kolejnymi płaszczyznami.
+
+Jeżeli wszystkie punkty bryły są przed płaszczyzną, zwracamy całą bryłę.
+Jeżeli wszystkie punkty bryły są za płąszczyzną, usuwamy całą bryłę.
+Jeżeli tylko jeden punkt bryły lub jedna krawędź bryły jest na płaszczyźnie a cała reszta przed nią, zwracamy całą bryłę.
+
+Podział bryły płaszczyzną polega na podzieleniu każdej z jego ścian, a następnie dodaniu nowej sciany.
+Jeżeli ściana jest w całości przed płaszczyzną, zwracamy całą ścianę.
+Jeżeli ściana jest w całości za płaszczyzną, usuwamy całą ścianę.
+Jeżeli ściana posiada jedynie jeden lub dwa punkty na płaszczyźnie, a całą reszta jest za nią, usuwamy cąłą ścianę.
+jeżeli ściana posiada jeden punkt na płaszczyźnie a reszta jest przed nią, zachowujemy całą ścianę.
+Jeżeli ściana posiada dwa punkty na płaszczyźnie, a reszta jest przed nią, zachowujemy całą ścianę, lecz usuwamy odpowiednią krawędź i dodajemy krawędź skierowaną tej ściany do listy nowych krawędzi.
+
+W innym przypadku zaczynamy na początku listy krawędzi i przechodzimy po niej.
+
+I.Jeżeli pierwsza krawędź jest przed ścianą, dodajemy ją do listy krawędzi nowej ściany. Iterujemy, dodając każdą następną krawędź przed ścianą. Kiedy natrafimy na krawędź przeciętą:
+- jeżeli jest przecięta w połowie, tworzymy nowy punkt w miejscu przecięcia, krawędź do tego punktu oraz nową o jeszcze nie ustalonym końcu.
+- jeżeli jest przecięta w początkowym punkcie, dodajemy nową zaczynającą się w tym samym punkcie i nie ustalonym końcu.
+- jeżeli jest przecięta na końcu, iterujemy dalej
+Następnie iterujemy dalej aż znajdziemy następną przeciętą krawędź.
+- jeżeli jest ona przecięta w połowie, tworzymy krawędź w tym punkcie, przypinamy do niej wolną krawędź stworzoną poprzednio, a ją samą przypinamy do następnej, potem iterujemy dalej i dodajemy wszystko co zostało do nowej ściany
+- jeżeli jej początek jest na ścianie, przypinamy do niej wolną krawędź
+- jeżeli jej koniec jest na ścianie, usuwamy, iterujemy dalej
+
+II. Jeżeli pierwsza krawędź jest za ścianą, iterujemy dalej aż znajdziemy przecięcie
+- jeżeli krawędź jest przecięta w środku, tworzymy punkt, dodajemy w niej krawędź i przypinamy do następnej
+- jeżeli jej koniec leży na płaszczyźnie, pomijamy
+- jeżeli jej początek leży na płaszczyźnie, dodajemy ją
+następnie iterujemy dodając wszystkie krawędzie do nowej ściany aż natrafimy na cięcie
+- jeżeli tnie na pół, dodajemy krawędź do nowego punktu, a następnie kolejną łączącą z początkiem
+- jeżeli koniec leży na płaszczyźnie dodajemy i iterujemy dalej
+- jeżeli początek leży na płaszczyźnie, dodajemy nową krawędź od punktu do początku
+
+III. Jeżeli początkowa krawędź jest przecięta
+- przy cięciu na pół
+    - jeżeli początek jest przed płaszczyzną, tworzymy nową krawędź i przechodzimy do przypadku I, na końcu łączymy ostatnią krawędź z początkiem
+    - jeżeli początek jest za płaszczyzną, tworzymy nową krawędź i przechodzimy do II
+- jeżeli cała jest przed, działamy jak w I i na końcu łączymy
+- jeżeli cała jest za, działamy jak w II
+
+Za każdym razem gdy tworzymy krawędź leżącą na płaszczyźnie tnącej, dodajemy ją do listy nowych krawędzi.
+
+Mając przecięte ściany, musimy utworzyć nową scianę na płaszczyźnie tnącej. Aby tego dokonać, tworzymy krawędzie skierowane z punktów na płaszczyźnie. Punkty te uzyskujemy z listy nowych krawędzi utworzonych w czasie cięcia ścian. Następnie parujemy wszystkie krawędzie skierowane i tworzymy nową listę krawędzi. Pozostało nam zbudowanie ściany z krawędzi skierowanych które właśnie dodaliśmy (nie posiadają one jeszcze kierunku). Dla każdej z nich, aby znaleźć krawędź ją poprzedzającą, przechodzimy na krawędź sparowaną, potem idziemy do następnej, potem spowrotem do sparowanej, a następnie ustawiamy, że jej następną jest nasza krawędź początkowa w danej iteracji.
+
+Po tej operacji mamy nowy obiekt bryły sztywnej gotowy do następnych cięć.
+
+Lista operacji do zrobienia:
+- zbadać warunki zachowania/odrzucenia całej bryły
+- zbadać warunki zachowania/odrzucenia ścian
+- przepisać ściany do zachowania do struktur tymczasowych
+- przeliczyć ściany z cięciami i dodać nowe do struktur tymczasowych
+- dodać nową ścianę do struktur tymczasowych
+- wykonać parowania
+- utrwalić struktury tymczasowe
+- być zajebistym
+
+Dla ułatwienia dalszych obliczeń, do każdej ściany należy przypisać płaszczyznę, z której powstała. Pomoże to w cięciu właściwej figury z użyciem uzyskanych komórek.
