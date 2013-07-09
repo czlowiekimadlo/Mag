@@ -4,6 +4,7 @@ VoronoiVertex::VoronoiVertex()
 {
     this->coords[0] = this->coords[1] = this->coords[2] = 0.0;
     this->halfEdge = 0;
+    this->id = 0;
 }
 
 void VoronoiVertex::fill(float *data)
@@ -50,6 +51,8 @@ VoronoiVertex * VoronoiVertex::getCopy()
     v->coords[0] = this->coords[0];
     v->coords[1] = this->coords[1];
     v->coords[2] = this->coords[2];
+    v->id = this->id;
+    v->halfEdge = this->halfEdge;
     return v;
 }
 

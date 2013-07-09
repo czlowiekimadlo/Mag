@@ -1,5 +1,4 @@
 #include "voronoiface.h"
-#include "voronoiedge.h"
 
 VoronoiFace::VoronoiFace()
 {
@@ -18,6 +17,41 @@ VoronoiFace::~VoronoiFace()
     if (this->plane != 0) {
         delete this->plane;
     }
+}
+
+int VoronoiFace::isCut(VoronoiPlane *p)
+{
+    VoronoiVertex * v;
+    bool front = false;
+    bool back = false;
+    int side;
+    VoronoiHalfEdge * e = this->halfEdge;
+
+    do {
+        v = e->v;
+        side = p->side(v);
+        if (side == 1) {
+            front = true;
+        }
+        if (side == -1) {
+            back = true;
+        }
+        if (front && back) {
+            return 0;
+        }
+
+        e = e->next;
+    } while (e != this->halfEdge);
+
+    if (front && !back) {
+        return 1;
+    }
+    if (back && !front) {
+        return -1;
+    }
+
+    // there was some error
+    throw 2;
 }
 
 /*

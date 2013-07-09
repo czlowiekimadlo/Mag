@@ -29,6 +29,11 @@ public:
 
     VoronoiVertex * center;
 
+protected:
+    int isCut(VoronoiPlane *);
+    void flushCell();
+    void splitFace(VoronoiFace *, VoronoiPlane *, QList<VoronoiVertex *> *, QList<VoronoiHalfEdge *> *, QList<VoronoiFace *> *);
+
     /*
     void pushVertex(float *);
 

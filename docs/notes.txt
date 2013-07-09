@@ -9,9 +9,8 @@ Dodatkowo istnieje lista krawędzi, każda krawędź posiada wskaźniki na dwie 
 
 Aby stworzyć komórkę diagramu voronoi, iteracyjnie kroimy całą bryłę kolejnymi płaszczyznami.
 
-Jeżeli wszystkie punkty bryły są przed płaszczyzną, zwracamy całą bryłę.
-Jeżeli wszystkie punkty bryły są za płąszczyzną, usuwamy całą bryłę.
-Jeżeli tylko jeden punkt bryły lub jedna krawędź bryły jest na płaszczyźnie a cała reszta przed nią, zwracamy całą bryłę.
+Jeżeli wszystkie punkty bryły są przed płaszczyzną lub na niej, zwracamy całą bryłę.
+Jeżeli wszystkie punkty bryły są za płąszczyzną lub na niej, usuwamy całą bryłę.
 
 Podział bryły płaszczyzną polega na podzieleniu każdej z jego ścian, a następnie dodaniu nowej sciany.
 Jeżeli ściana jest w całości przed płaszczyzną, zwracamy całą ścianę.

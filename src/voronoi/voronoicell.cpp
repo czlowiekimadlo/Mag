@@ -7,6 +7,21 @@ VoronoiCell::VoronoiCell()
 
 VoronoiCell::~VoronoiCell()
 {
+    this->flushCell();
+    /*
+    VoronoiFace * f;
+    while (!this->facets.empty()) {
+        f = this->facets.front();
+        delete f;
+        this->facets.pop_front();
+    }
+
+    delete this->center;
+    */
+}
+
+void VoronoiCell::flushCell()
+{
     VoronoiVertex * v;
     VoronoiHalfEdge * he;
     VoronoiEdge * e;
@@ -34,16 +49,6 @@ VoronoiCell::~VoronoiCell()
         delete f;
         this->faces.pop_front();
     }
-    /*
-    VoronoiFace * f;
-    while (!this->facets.empty()) {
-        f = this->facets.front();
-        delete f;
-        this->facets.pop_front();
-    }
-
-    delete this->center;
-    */
 }
 
 void VoronoiCell::buildMesh(QList<float *> *verts, QList<QList<int> *> *facets)
@@ -141,7 +146,7 @@ void VoronoiCell::createEdges(QList<VoronoiHalfEdge *> *hel, QList<VoronoiEdge *
     }
 }
 
-// check all edges for intersection wit a plan
+// check all edges for intersection with a plane
 QList<VoronoiSplitEdge *> * VoronoiCell::retrieveSplitEdges(VoronoiPlane *p)
 {
     VoronoiEdge * e;
@@ -158,6 +163,75 @@ QList<VoronoiSplitEdge *> * VoronoiCell::retrieveSplitEdges(VoronoiPlane *p)
     return splitEdges;
 }
 
+int VoronoiCell::isCut(VoronoiPlane * p)
+{
+    VoronoiVertex * v;
+    bool front = false;
+    bool back = false;
+    int side;
+
+    for(int i = 0; i < this->vertices.size(); i++) {
+        v = this->vertices.at(i);
+        side = p->side(v);
+        if (side == 1) {
+            front = true;
+        }
+        if (side == -1) {
+            back = true;
+        }
+        if (front && back) {
+            return 0;
+        }
+    }
+
+    if (front && !back) {
+        return 1;
+    }
+    if (back && !front) {
+        return -1;
+    }
+
+    // there was some error
+    throw 2;
+}
+
+void VoronoiCell::splitFace(VoronoiFace * f, VoronoiPlane * p, QList<VoronoiVertex *> * newVertices, QList<VoronoiHalfEdge *> * newHalfEdges, QList<VoronoiFace *> * newFaces)
+{
+    int cut;
+
+    cut = f->isCut(p);
+
+    if (cut == -1) return;
+    if (cut == 1) {
+        // copy whole face
+    }
+
+    // proceed with cut
+}
+
+void VoronoiCell::splitMesh(VoronoiPlane * p)
+{
+    int cut;
+    QList<VoronoiVertex *> newVertices;
+    QList<VoronoiHalfEdge *> newHalfEdges;
+    QList<VoronoiFace *> newFaces;
+
+    // check if the plane cuts the mesh at all
+    cut = this->isCut(p);
+    if (cut == 1) return;
+    if (cut == -1) {
+        this->flushCell();
+        return;
+    }
+
+    // cut each face separately
+    for(int i = 0; i < this->faces.size(); i++) {
+        this->splitFace(this->faces.at(i), p, &newVertices, &newHalfEdges, &newFaces);
+    }
+}
+
+
+/*
 
 // Split the mesh in half, retain the part on the same side as the point "center".
 // Works only on a convex mesh !!!
@@ -431,7 +505,7 @@ void VoronoiCell::splitMesh(VoronoiPlane * p)
     }
 }
 
-
+*/
 
 
 

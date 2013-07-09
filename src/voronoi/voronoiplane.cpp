@@ -20,13 +20,16 @@ VoronoiPlane::~VoronoiPlane()
     delete this->normal;
 }
 
+//  1 - in the front
+// -1 - in the back
+//  0 - on the plane
 int VoronoiPlane::side(VoronoiVertex *v)
 {
     VoronoiVertex v1;
     VoronoiVertex v2;
     VoronoiVertex  * reverted;
     float distanceNormal, distanceReverted;
-    reverted = normal->getCopy();
+    reverted = this->normal->getCopy();
     reverted->revert();
 
     v1.add(this->referencePoint, this->normal);

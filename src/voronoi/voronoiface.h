@@ -4,6 +4,7 @@
 //#include "voronoiedge.h"
 #include "voronoihalfedge.h"
 #include "voronoiplane.h"
+#include "voronoivertex.h"
 
 class VoronoiFace
 {
@@ -14,6 +15,8 @@ public:
     int id;
     VoronoiHalfEdge * halfEdge;
     VoronoiPlane * plane;
+
+    int isCut(VoronoiPlane *);
 
     /*
     void fill(float *, float *, float *);
