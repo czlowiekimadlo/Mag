@@ -58,12 +58,9 @@ VoronoiVertex * VoronoiVertex::getCopy()
 
 void VoronoiVertex::normalize()
 {
-    float d1, d2, d;
+    float d;
 
-    d1 = sqrt(this->coords[0] * this->coords[0] + this->coords[1] * this->coords[1]);
-    d2 = sqrt(this->coords[0] * this->coords[0] + this->coords[2] * this->coords[2]);
-
-    d = sqrt(d1 * d1 + d2 * d2);
+    d = sqrt(this->coords[0] * this->coords[0] + this->coords[1] * this->coords[1] + this->coords[2] * this->coords[2]);
 
     this->coords[0] /= d;
     this->coords[1] /= d;
@@ -91,4 +88,15 @@ void VoronoiVertex::scale(float s)
     for (int i = 0; i < 3; i++) {
         this->coords[i] = this->coords[i] * s;
     }
+}
+
+bool VoronoiVertex::equals(VoronoiVertex * v)
+{
+    for (int i = 0; i < 3; i++) {
+        if (this->coords[i] != v->coords[i]) {
+            return false;
+        }
+    }
+
+    return true;
 }

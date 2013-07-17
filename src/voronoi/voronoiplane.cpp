@@ -7,7 +7,8 @@ VoronoiPlane::VoronoiPlane(VoronoiVertex * point, VoronoiVertex * normal)
     this->a = n->coords[0];
     this->b = n->coords[1];
     this->c = n->coords[2];
-    this->d = this->a * point->coords[0] - this->b * point->coords[1] - this->c * point->coords[2];
+    this->d = -(this->a * point->coords[0] + this->b * point->coords[1] + this->c * point->coords[2]);
+
     delete n;
 
     this->referencePoint = point;
@@ -53,6 +54,8 @@ int VoronoiPlane::side(VoronoiVertex *v)
 float VoronoiPlane::dist(VoronoiVertex * v)
 {
     float d = this->a * v->coords[0] + this->b * v->coords[1] + this->c * v->coords[2] + this->d;
+    //std::cout << this->referencePoint->coords[0] << " " << v->coords[0] << std::endl;
+    //std::cout << this->a << " " << this->b << " " << this->c << " " << this->d << " " << std::endl;
     if (d < 0) d = -d;
     return d;
 }

@@ -174,8 +174,57 @@ void ViewWidget::drawTriangulation() {
     }
 }
 
-void ViewWidget::drawVoronoi() {
+void ViewWidget::drawVoronoi()
+{
+    VoronoiCell * cell = this->object.vCells.at(this->voronoiCell);
+    VoronoiFace * face;
+    VoronoiHalfEdge * halfEdgeHandler;
+    VoronoiVertex * vertexHandler;
+    float * vertex;
 
+    for (int i = 0; i < cell->faces.size(); i++) {
+        face = cell->faces.at(i);
+        halfEdgeHandler = face->halfEdge;
+
+        std::cout << "drawing face " << face << std::endl;
+
+        glColor3f(0, 255.0,0);
+        glBegin(GL_LINE_LOOP);
+
+        do {
+            if (halfEdgeHandler == NULL) {
+                std::cout << "empty hander" << std::endl;
+                break;
+            }
+            if (halfEdgeHandler->next == NULL) {
+                std::cout << "empty next" << std::endl;
+                break;
+            }
+
+            vertexHandler = halfEdgeHandler->v;
+            vertex = vertexHandler->coords;
+            if (vertex == NULL) {
+                std::cout << "empty vertex" << std::endl;
+                break;
+            }
+            glVertex3f(vertex[0], vertex[1], vertex[2]);
+
+            halfEdgeHandler = halfEdgeHandler->next;
+        } while (halfEdgeHandler != face->halfEdge);
+
+        glEnd();
+    }
+
+//    VoronoiSplitEdge * seHandler;
+//    glColor3f(0, 255.0,255.0);
+//    glBegin(GL_LINE_LOOP);
+//    for (int i = 0; i < cell->splitEdges->size(); i++) {
+//        seHandler = cell->splitEdges->at(i);
+
+//        vertex = seHandler->splitVertex->coords;
+//        glVertex3f(vertex[0], vertex[1], vertex[2]);
+//    }
+//    glEnd();
 }
 
 void ViewWidget::drawAxles()

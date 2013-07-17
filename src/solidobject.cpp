@@ -292,37 +292,37 @@ void SolidObject::loadModel(QString fileName) {
 
 void SolidObject::generateRandomPoints(int amount)
 {
-    //QList<float *>::iterator it;
+    QList<float *>::iterator it;
     float * point;
-    //int sum, scale, use;
+    int sum, scale, use;
 
     if (amount <= 0) return;
 
     this->destroyRandomPoints();
 
-    //generate two points to split mesh in halfs
-    float midX, midY, midZ, midX1, midX2;
-    midX = (this->BBvertices.at(0)[0] + this->BBvertices.at(6)[0]) / 2.0;
-    midY = (this->BBvertices.at(0)[1] + this->BBvertices.at(6)[1]) / 2.0;
-    midZ = (this->BBvertices.at(0)[2] + this->BBvertices.at(6)[2]) / 2.0;
-    midX1 = (midX + this->BBvertices.at(6)[0]) / 2.0;
-    midX2 = (midX + this->BBvertices.at(0)[0]) / 2.0;
+//    //generate two points to split mesh in halfs
+//    float midX, midY, midZ, midX1, midX2;
+//    midX = (this->BBvertices.at(0)[0] + this->BBvertices.at(6)[0]) / 2.0;
+//    midY = (this->BBvertices.at(0)[1] + this->BBvertices.at(6)[1]) / 2.0;
+//    midZ = (this->BBvertices.at(0)[2] + this->BBvertices.at(6)[2]) / 2.0;
+//    midX1 = (midX + this->BBvertices.at(6)[0]) / 2.0;
+//    midX2 = (midX + this->BBvertices.at(0)[0]) / 2.0;
 
-    //point 1
-    point = new float[3];
-    point[0] = midX1;
-    point[1] = midY;
-    point[2] = midZ;
-    this->randomPoints.push_back(point);
+//    //point 1
+//    point = new float[3];
+//    point[0] = midX1;
+//    point[1] = midY;
+//    point[2] = midZ;
+//    this->randomPoints.push_back(point);
 
-    //point 2
-    point = new float[3];
-    point[0] = midX2;
-    point[1] = midY;
-    point[2] = midZ;
-    this->randomPoints.push_back(point);
+//    //point 2
+//    point = new float[3];
+//    point[0] = midX2;
+//    point[1] = midY;
+//    point[2] = midZ;
+//    this->randomPoints.push_back(point);
 
-    /* temporarily commented, do not remove this!
+
     for (int i = 0; i < amount; i++)
     {
         point = new float[3];
@@ -344,7 +344,7 @@ void SolidObject::generateRandomPoints(int amount)
         point[2] = point[2] / (double)sum;
         this->randomPoints.push_back(point);
     }
-    */
+
 }
 
 void SolidObject::destroyRandomPoints()

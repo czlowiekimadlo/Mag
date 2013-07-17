@@ -1,6 +1,7 @@
 #ifndef VORONOIPLANE_H
 #define VORONOIPLANE_H
 
+#include "math.h"
 #include "voronoivertex.h"
 
 class VoronoiVertex;

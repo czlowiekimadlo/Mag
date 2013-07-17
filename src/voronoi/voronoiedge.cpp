@@ -39,17 +39,23 @@ VoronoiVertex * VoronoiEdge::planeEdgeIntersection(VoronoiPlane *p)
 
     // different sides, find point of intersection
     if (side0 * side1 == -1) {
-        distance = v0->dist(v1);
+        distance = sqrt(v0->dist(v1));
         distance0 = p->dist(v0);
         distance1 = p->dist(v1);
+
+        //std::cout << distance << " " << distance0 << " " << distance1 << " " << v0->coords[0] << " " << v1->coords[0] << std::endl;
+
         d = distance0 / (distance0 + distance1);
-        d = d * distance;
-        direction.sub(v1, v0);
-        direction.normalize();
+        direction.sub(v0, v1);
         direction.scale(d);
+
+        //std::cout << d << std::endl;
+        //std::cout << direction.coords[0] << " " << direction.coords[1] << " " << direction.coords[2] << std::endl;
 
         v = new VoronoiVertex();
         v->add(v0, &direction);
+
+        //std::cout << v->coords[0] << " " << v->coords[1] << " " << v->coords[2] << std::endl;
         return v;
     }
 

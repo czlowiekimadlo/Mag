@@ -53,13 +53,13 @@ Mając przecięte ściany, musimy utworzyć nową scianę na płaszczyźnie tną
 Po tej operacji mamy nowy obiekt bryły sztywnej gotowy do następnych cięć.
 
 Lista operacji do zrobienia:
-- zbadać warunki zachowania/odrzucenia całej bryły
-- zbadać warunki zachowania/odrzucenia ścian
-- przepisać ściany do zachowania do struktur tymczasowych
-- przeliczyć ściany z cięciami i dodać nowe do struktur tymczasowych
-- dodać nową ścianę do struktur tymczasowych
-- wykonać parowania
-- utrwalić struktury tymczasowe
+- zbadać warunki zachowania/odrzucenia całej bryły (OK)
+- zbadać warunki zachowania/odrzucenia ścian (OK)
+- przepisać ściany do zachowania do struktur tymczasowych (OK)
+- przeliczyć ściany z cięciami i dodać nowe do struktur tymczasowych (OK)
+- dodać nową ścianę do struktur tymczasowych (OK)
+- wykonać parowania (OK)
+- utrwalić struktury tymczasowe (OK)
 - być zajebistym
 
 Dla ułatwienia dalszych obliczeń, do każdej ściany należy przypisać płaszczyznę, z której powstała. Pomoże to w cięciu właściwej figury z użyciem uzyskanych komórek.

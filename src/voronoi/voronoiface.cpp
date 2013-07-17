@@ -50,7 +50,7 @@ int VoronoiFace::isCut(VoronoiPlane *p)
         return -1;
     }
 
-    // there was some error
+    // there was some error or whole face is on plane
     throw 2;
 }
 

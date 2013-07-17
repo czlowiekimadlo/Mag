@@ -21,6 +21,7 @@ public:
     void scale(float);
     void normalize();
     void revert();
+    bool equals(VoronoiVertex *);
 
     float coords[3];
     int id;

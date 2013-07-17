@@ -5,6 +5,7 @@
 //class VoronoiFace;
 
 #include <iostream>
+#include "math.h"
 #include "voronoihalfedge.h"
 #include "voronoiplane.h"
 #include "voronoivertex.h"
