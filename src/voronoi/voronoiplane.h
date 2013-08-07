@@ -13,6 +13,7 @@ public:
     ~VoronoiPlane();
     int side(VoronoiVertex *);
     float dist(VoronoiVertex *);
+    VoronoiPlane * getCopy();
 
     float a,b,c,d;
     VoronoiVertex * referencePoint;

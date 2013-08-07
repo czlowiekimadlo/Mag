@@ -40,19 +40,6 @@ protected:
     void buildCutFace(QList<VoronoiHalfEdge *> *, QList<VoronoiFace *> *, QList<VoronoiVertex *> *, VoronoiPlane *, QList<VoronoiEdge *> *);
     void persistElements(QList<VoronoiVertex *> *, QList<VoronoiHalfEdge *> *, QList<VoronoiEdge *> *, QList<VoronoiFace *> *);
 
-    /*
-    void pushVertex(float *);
-
-    float * center;
-    QList<VoronoiFace *> facets;
-
-protected:
-    void buildTetra();
-    void addVertex(int);
-    void recalculateCenter();
-
-    QList<float *> vertices;
-    */
 };
 
 #endif // VORONOICELL_H

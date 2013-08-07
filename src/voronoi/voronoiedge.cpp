@@ -3,24 +3,7 @@
 VoronoiEdge::VoronoiEdge()
 {
     this->halfEdge = 0;
-    /*
-    this->adjacentEdge = NULL;
-    this->parent = NULL;
-    this->v1 = NULL;
-    this->v2 = NULL;
-    */
 }
-
-/*
-bool VoronoiEdge::operator==(const VoronoiEdge &edge) const
-{
-    if ((this->v1 == edge.v1 && this->v2 == edge.v2)
-            || (this->v1 == edge.v2 && this->v2 == edge.v1)) {
-        return true;
-    }
-    return false;
-}
-*/
 
 VoronoiVertex * VoronoiEdge::planeEdgeIntersection(VoronoiPlane *p)
 {

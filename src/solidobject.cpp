@@ -24,15 +24,16 @@ SolidObject::~SolidObject() {
 
     this->flushValuesList(&this->triangulationWallsUsage);
 
-    while (!this->voronoiVertices.empty()) {
-        this->voronoiVertices.pop_front();
-    }
-    this->flushFacesList(&this->voronoiFaces);
-    this->flushFacesList(&this->voronoiCells);
     while (!this->vCells.empty()) {
         v = this->vCells.first();
         delete v;
         this->vCells.pop_front();
+    }
+
+    while (!this->fragments.empty()) {
+        v = this->fragments.first();
+        delete v;
+        this->fragments.pop_front();
     }
 
     this->destroyRandomPoints();
@@ -97,7 +98,6 @@ void SolidObject::loadModel(QString fileName) {
     float *vertex;
     float maxX, maxY, maxZ;
     float minX, minY, minZ;
-    float maxSize;
 
     maxX = maxY = maxZ = minX = minY = minZ = 0;
 
@@ -145,149 +145,215 @@ void SolidObject::loadModel(QString fileName) {
         }
         file.close();
 
-        // build bounding box vertices
-        vertex = new float[3];
-        vertex[0] = maxX;
-        vertex[1] = maxY;
-        vertex[2] = maxZ;
-        this->BBvertices.push_back(vertex);
-        vertex = new float[3];
-        vertex[0] = maxX;
-        vertex[1] = minY;
-        vertex[2] = maxZ;
-        this->BBvertices.push_back(vertex);
-        vertex = new float[3];
-        vertex[0] = maxX;
-        vertex[1] = minY;
-        vertex[2] = minZ;
-        this->BBvertices.push_back(vertex);
-        vertex = new float[3];
-        vertex[0] = maxX;
-        vertex[1] = maxY;
-        vertex[2] = minZ;
-        this->BBvertices.push_back(vertex);
-        vertex = new float[3];
-        vertex[0] = minX;
-        vertex[1] = maxY;
-        vertex[2] = maxZ;
-        this->BBvertices.push_back(vertex);
-        vertex = new float[3];
-        vertex[0] = minX;
-        vertex[1] = maxY;
-        vertex[2] = minZ;
-        this->BBvertices.push_back(vertex);
-        vertex = new float[3];
-        vertex[0] = minX;
-        vertex[1] = minY;
-        vertex[2] = minZ;
-        this->BBvertices.push_back(vertex);
-        vertex = new float[3];
-        vertex[0] = minX;
-        vertex[1] = minY;
-        vertex[2] = maxZ;
-        this->BBvertices.push_back(vertex);
-
-        // calculate size
-        this->sidesSizes[0] = maxX - minX;
-        this->sidesSizes[1] = maxY - minY;
-        this->sidesSizes[2] = maxZ - minZ;
-        if (this->sidesSizes[0] < 0.0) this->sidesSizes[0] = -this->sidesSizes[0];
-        if (this->sidesSizes[1] < 0.0) this->sidesSizes[1] = -this->sidesSizes[1];
-        if (this->sidesSizes[2] < 0.0) this->sidesSizes[2] = -this->sidesSizes[2];
-
-        // build bounding box faces
-        face = new QList<int>;
-        face->push_back(1);
-        face->push_back(2);
-        face->push_back(3);
-        face->push_back(4);
-        this->BBfaces.push_back(face);
-        face = new QList<int>;
-        face->push_back(5);
-        face->push_back(6);
-        face->push_back(7);
-        face->push_back(8);
-        this->BBfaces.push_back(face);
-        face = new QList<int>;
-        face->push_back(1);
-        face->push_back(5);
-        face->push_back(8);
-        face->push_back(2);
-        this->BBfaces.push_back(face);
-        face = new QList<int>;
-        face->push_back(2);
-        face->push_back(8);
-        face->push_back(7);
-        face->push_back(3);
-        this->BBfaces.push_back(face);
-        face = new QList<int>;
-        face->push_back(3);
-        face->push_back(7);
-        face->push_back(6);
-        face->push_back(4);
-        this->BBfaces.push_back(face);
-        face = new QList<int>;
-        face->push_back(5);
-        face->push_back(1);
-        face->push_back(4);
-        face->push_back(6);
-        this->BBfaces.push_back(face);
-
-        // build super tetra
-        if (this->sidesSizes[0] > this->sidesSizes[1]) {
-            if (this->sidesSizes[0] > this->sidesSizes[2]) {
-                maxSize = this->sidesSizes[0];
-            } else {
-                maxSize = this->sidesSizes[2];
-            }
-        } else {
-            if (this->sidesSizes[1] > this->sidesSizes[2]) {
-                maxSize = this->sidesSizes[1];
-            } else {
-                maxSize = this->sidesSizes[2];
-            }
-        }
-        vertex = new float[3];
-        vertex[0] = maxX + 0.5 * maxSize;
-        vertex[1] = minY - 0.5 * maxSize;
-        vertex[2] = minZ - 0.5 * maxSize;
-        this->superTetraVertices.push_back(vertex);
-        vertex = new float[3];
-        vertex[0] = minX - 3.5 * maxSize;
-        vertex[1] = minY - 0.5 * maxSize;
-        vertex[2] = minZ - 0.5 * maxSize;
-        this->superTetraVertices.push_back(vertex);
-        vertex = new float[3];
-        vertex[0] = maxX + 0.5 * maxSize;
-        vertex[1] = minY - 0.5 * maxSize;
-        vertex[2] = maxZ + 3.5 * maxSize;
-        this->superTetraVertices.push_back(vertex);
-        vertex = new float[3];
-        vertex[0] = maxX + 0.5 * maxSize;
-        vertex[1] = maxY + 3.5 * maxSize;
-        vertex[2] = minZ - 0.5 * maxSize;
-        this->superTetraVertices.push_back(vertex);
-        face = new QList<int>;
-        face->push_back(1);
-        face->push_back(2);
-        face->push_back(3);
-        this->superTetraFaces.push_back(face);
-        face = new QList<int>;
-        face->push_back(1);
-        face->push_back(2);
-        face->push_back(4);
-        this->superTetraFaces.push_back(face);
-        face = new QList<int>;
-        face->push_back(1);
-        face->push_back(4);
-        face->push_back(3);
-        this->superTetraFaces.push_back(face);
-        face = new QList<int>;
-        face->push_back(2);
-        face->push_back(3);
-        face->push_back(4);
-        this->superTetraFaces.push_back(face);
+        this->processModel(minX, maxX, minY, maxY, minZ, maxZ);
     }
+}
+
+void SolidObject::loadModel(VoronoiCell * c)
+{
+    VoronoiVertex * vertexHandler;
+    VoronoiHalfEdge * halfEdgeHandler;
+    VoronoiFace * voronoiFace;
+    QList<int> * face;
+    float *vertex;
+    float maxX, maxY, maxZ;
+    float minX, minY, minZ;
+
+    maxX = maxY = maxZ = minX = minY = minZ = 0;
+
+    if (c != NULL) {
+        for (int i = 0; i < c->vertices.size(); i++) {
+            vertexHandler = c->vertices.at(i);
+
+            vertex = new float[3];
+            vertex[0] = vertexHandler->coords[0];
+            vertex[1] = vertexHandler->coords[1];
+            vertex[2] = vertexHandler->coords[2];
+
+            // find extreme points for bounding box
+            if (this->vertices.size() == 0)
+            {
+                maxX = minX = vertex[0];
+                maxY = minY = vertex[1];
+                maxZ = minZ = vertex[2];
+            }
+            if (vertex[0] > maxX) maxX = vertex[0];
+            if (vertex[0] < minX) minX = vertex[0];
+            if (vertex[1] > maxY) maxY = vertex[1];
+            if (vertex[1] < minY) minY = vertex[1];
+            if (vertex[2] > maxZ) maxZ = vertex[2];
+            if (vertex[2] < minZ) minZ = vertex[2];
+
+            this->vertices.push_back(vertex);
+        }
+
+        for (int i = 0; i < c->faces.size(); i++) {
+            voronoiFace = c->faces.at(i);
+
+            face = new QList<int>;
+
+            halfEdgeHandler = voronoiFace->halfEdge;
+
+            do {
+                face->push_back(halfEdgeHandler->v->id + 1);
+                halfEdgeHandler = halfEdgeHandler->next;
+            } while (halfEdgeHandler != voronoiFace->halfEdge);
+
+            this->faces.push_back(face);
+        }
+
+        this->processModel(minX, maxX, minY, maxY, minZ, maxZ);
+    }
+}
+
+void SolidObject::processModel(float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
+{
+    QList<int> * face;
+    float *vertex;
+    float maxSize;
+
+    // build bounding box vertices
+    vertex = new float[3];
+    vertex[0] = maxX;
+    vertex[1] = maxY;
+    vertex[2] = maxZ;
+    this->BBvertices.push_back(vertex);
+    vertex = new float[3];
+    vertex[0] = maxX;
+    vertex[1] = minY;
+    vertex[2] = maxZ;
+    this->BBvertices.push_back(vertex);
+    vertex = new float[3];
+    vertex[0] = maxX;
+    vertex[1] = minY;
+    vertex[2] = minZ;
+    this->BBvertices.push_back(vertex);
+    vertex = new float[3];
+    vertex[0] = maxX;
+    vertex[1] = maxY;
+    vertex[2] = minZ;
+    this->BBvertices.push_back(vertex);
+    vertex = new float[3];
+    vertex[0] = minX;
+    vertex[1] = maxY;
+    vertex[2] = maxZ;
+    this->BBvertices.push_back(vertex);
+    vertex = new float[3];
+    vertex[0] = minX;
+    vertex[1] = maxY;
+    vertex[2] = minZ;
+    this->BBvertices.push_back(vertex);
+    vertex = new float[3];
+    vertex[0] = minX;
+    vertex[1] = minY;
+    vertex[2] = minZ;
+    this->BBvertices.push_back(vertex);
+    vertex = new float[3];
+    vertex[0] = minX;
+    vertex[1] = minY;
+    vertex[2] = maxZ;
+    this->BBvertices.push_back(vertex);
+
+    // calculate size
+    this->sidesSizes[0] = maxX - minX;
+    this->sidesSizes[1] = maxY - minY;
+    this->sidesSizes[2] = maxZ - minZ;
+    if (this->sidesSizes[0] < 0.0) this->sidesSizes[0] = -this->sidesSizes[0];
+    if (this->sidesSizes[1] < 0.0) this->sidesSizes[1] = -this->sidesSizes[1];
+    if (this->sidesSizes[2] < 0.0) this->sidesSizes[2] = -this->sidesSizes[2];
+
+    // build bounding box faces
+    face = new QList<int>;
+    face->push_back(1);
+    face->push_back(2);
+    face->push_back(3);
+    face->push_back(4);
+    this->BBfaces.push_back(face);
+    face = new QList<int>;
+    face->push_back(5);
+    face->push_back(6);
+    face->push_back(7);
+    face->push_back(8);
+    this->BBfaces.push_back(face);
+    face = new QList<int>;
+    face->push_back(1);
+    face->push_back(5);
+    face->push_back(8);
+    face->push_back(2);
+    this->BBfaces.push_back(face);
+    face = new QList<int>;
+    face->push_back(2);
+    face->push_back(8);
+    face->push_back(7);
+    face->push_back(3);
+    this->BBfaces.push_back(face);
+    face = new QList<int>;
+    face->push_back(3);
+    face->push_back(7);
+    face->push_back(6);
+    face->push_back(4);
+    this->BBfaces.push_back(face);
+    face = new QList<int>;
+    face->push_back(5);
+    face->push_back(1);
+    face->push_back(4);
+    face->push_back(6);
+    this->BBfaces.push_back(face);
+
+    // build super tetra
+    if (this->sidesSizes[0] > this->sidesSizes[1]) {
+        if (this->sidesSizes[0] > this->sidesSizes[2]) {
+            maxSize = this->sidesSizes[0];
+        } else {
+            maxSize = this->sidesSizes[2];
+        }
+    } else {
+        if (this->sidesSizes[1] > this->sidesSizes[2]) {
+            maxSize = this->sidesSizes[1];
+        } else {
+            maxSize = this->sidesSizes[2];
+        }
+    }
+    vertex = new float[3];
+    vertex[0] = maxX + 0.5 * maxSize;
+    vertex[1] = minY - 0.5 * maxSize;
+    vertex[2] = minZ - 0.5 * maxSize;
+    this->superTetraVertices.push_back(vertex);
+    vertex = new float[3];
+    vertex[0] = minX - 3.5 * maxSize;
+    vertex[1] = minY - 0.5 * maxSize;
+    vertex[2] = minZ - 0.5 * maxSize;
+    this->superTetraVertices.push_back(vertex);
+    vertex = new float[3];
+    vertex[0] = maxX + 0.5 * maxSize;
+    vertex[1] = minY - 0.5 * maxSize;
+    vertex[2] = maxZ + 3.5 * maxSize;
+    this->superTetraVertices.push_back(vertex);
+    vertex = new float[3];
+    vertex[0] = maxX + 0.5 * maxSize;
+    vertex[1] = maxY + 3.5 * maxSize;
+    vertex[2] = minZ - 0.5 * maxSize;
+    this->superTetraVertices.push_back(vertex);
+    face = new QList<int>;
+    face->push_back(1);
+    face->push_back(2);
+    face->push_back(3);
+    this->superTetraFaces.push_back(face);
+    face = new QList<int>;
+    face->push_back(1);
+    face->push_back(2);
+    face->push_back(4);
+    this->superTetraFaces.push_back(face);
+    face = new QList<int>;
+    face->push_back(1);
+    face->push_back(4);
+    face->push_back(3);
+    this->superTetraFaces.push_back(face);
+    face = new QList<int>;
+    face->push_back(2);
+    face->push_back(3);
+    face->push_back(4);
+    this->superTetraFaces.push_back(face);
 }
 
 void SolidObject::generateRandomPoints(int amount)
@@ -548,162 +614,55 @@ void SolidObject::createVoronoi()
 
     delete v1;
     delete v2;
+}
+
+void SolidObject::createFragments()
+{
+    VoronoiCell * cell;
+    VoronoiCell * fragment;
+    VoronoiFace * face;
 
 
+    while (!this->fragments.empty()) {
+        cell = this->fragments.first();
+        delete cell;
+        this->fragments.pop_front();
+    }
 
+    for (int i = 0; i < this->vCells.size(); i++)
+    {
+        cell = this->vCells.at(i);
 
+        fragment = new VoronoiCell();
+        fragment->buildMesh(&(this->vertices), &(this->faces));
+        fragment->center = cell->center->getCopy();
 
+        for (int j = 0; j < cell->faces.size(); j++) {
+            face = cell->faces.at(j);
+            if (face->plane != NULL) {
+                std::cout << i << " " << j << std::endl;
+                fragment->splitMesh(face->plane->getCopy());
+            }
+        }
 
+        this->fragments.push_back(fragment);
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*
-    QList<int> adjacentVertices;
-    QList<int> templist;
-    QList<int> * face;
-    QList<int> * cell;
-    int index, last;
-    float distance, x, y, z;
-    float minDistance;
-    bool faceMatched;
-    float * vertex;
-
-
+QList<SolidObject *> * SolidObject::split()
+{
+    QList<SolidObject *> * objects = new QList<SolidObject *>;
+    SolidObject * object;
     VoronoiCell * cell;
 
-    // clear data
-    while (!this->voronoiVertices.empty()) {
-        this->voronoiVertices.pop_front();
-    }
-    this->flushFacesList(&this->voronoiFaces);
-    this->flushFacesList(&this->voronoiCells);
-    while (!this->vCells.empty()) {
-        cell = this->vCells.first();
-        delete cell;
-        this->vCells.pop_front();
+    for (int i = 0; i < this->fragments.size(); i++) {
+        cell = this->fragments.at(i);
+
+        object = new SolidObject();
+        object->loadModel(cell);
+
+        objects->push_back(object);
     }
 
-    for (int i = 4; i < this->triangulationVertices.size(); i++) {
-
-        cell = new VoronoiCell();
-
-        // search for cell vertices
-        for (int j = 0; j < this->triangulationCells.size(); j++) {
-            if (this->triangulationCells.at(j) == NULL) continue;
-            if (this->triangulationCells.at(j)->containsVertex(i+1)) {
-                cell->pushVertex(this->triangulationCells.at(j)->center);
-            }
-        }
-
-        this->vCells.push_back(cell);
-
-
-        // search for adjacent vertices
-        this->flushValuesList(&adjacentVertices);
-        for (int j = 0; j < this->triangulationFaces.size(); j++) {
-            if (this->triangulationWallsUsage.at(j) < 1) continue;
-            index = this->triangulationFaces.at(j)->indexOf(i+1);
-            if (index != -1) {
-                for (int k = 0; k < 3; k++) {
-                    if (this->triangulationFaces.at(j)->at(k) < 5) continue;
-                    if (k != index && adjacentVertices.indexOf(this->triangulationFaces.at(j)->at(k)) == -1) {
-                        adjacentVertices.push_back(this->triangulationFaces.at(j)->at(k));
-                    }
-                }
-            }
-        }
-
-        //std::cout << "calculating cell " << i << std::endl;
-        //std::cout << "walls " << adjacentVertices.size() << std::endl;
-        //for (int h = 0; h < adjacentVertices.size(); h++) {
-        //    std::cout << adjacentVertices.at(h) << " ";
-        //}
-        //std::cout << std::endl;
-
-        // create cell
-
-        cell = new QList<int>;
-
-        // build cell walls, one for each adjacent vertex
-        for (int j = 0; j < adjacentVertices.size(); j++) {
-            this->flushValuesList(&templist);
-            // search for cells containing this edge
-            for (int k = 0; k < this->triangulationCells.size(); k++) {
-                if (this->triangulationCells.at(k) == NULL) continue;
-                for (int l = 0; l < 4; l++) {
-                    if (this->triangulationFaces.at(this->triangulationCells.at(k)->faces[l] - 1)->indexOf(i+1) != -1
-                     && this->triangulationFaces.at(this->triangulationCells.at(k)->faces[l] - 1)->indexOf(adjacentVertices.at(j)) != -1) {
-                        vertex = this->triangulationCells.at(k)->center;
-                        index = this->voronoiVertices.indexOf(vertex);
-                        if (index == -1) {
-                            this->voronoiVertices.push_back(vertex);
-                            index = this->voronoiVertices.indexOf(vertex);
-                        }
-                        templist.push_back(index + 1);
-                        break;
-                    }
-                }
-            }
-            if (templist.empty()) continue;
-            // see if this wall already exists
-            faceMatched = false;
-            for (int k = 0; k < this->voronoiFaces.size(); k++) {
-                faceMatched = true;
-                for (int l = 0; l < templist.size(); l++) {
-                    if (this->voronoiFaces.at(k)->indexOf(templist.at(l)) == -1) {
-                        faceMatched = false;
-                        break;
-                    }
-                }
-                if (faceMatched) {
-                    index = k;
-                    break;
-                }
-            }
-            if (faceMatched) {
-                cell->push_back(index);
-                continue;
-            }
-
-            // put vertices into face in order
-            face = new QList<int>;
-            face->push_back(templist.at(0));
-            last = 0;
-            index = 1;
-            for (int k = 1; k < templist.size(); k++) {
-                minDistance = -1.0;
-                for (int l = 1; l < templist.size(); l++) {
-                    if (l == last) continue;
-                    x = this->voronoiVertices.at(templist.at(last)-1)[0] - this->voronoiVertices.at(templist.at(l)-1)[0];
-                    y = this->voronoiVertices.at(templist.at(last)-1)[1] - this->voronoiVertices.at(templist.at(l)-1)[1];
-                    z = this->voronoiVertices.at(templist.at(last)-1)[2] - this->voronoiVertices.at(templist.at(l)-1)[2];
-
-                    distance = x*x + y*y + z*z;
-                    if (distance < minDistance || minDistance < 0.0) {
-                        minDistance = distance;
-                        index = l;
-                    }
-                }
-                last = index;
-                face->push_back(templist.at(last));
-            }
-
-            this->voronoiFaces.push_back(face);
-            cell->push_back(this->voronoiFaces.indexOf(face));
-        }
-
-        this->voronoiCells.push_back(cell);
-    }
-    */
+    return objects;
 }

@@ -15,7 +15,10 @@ ViewWidget::ViewWidget() : QGLWidget()
     this->showTriangulation = false;
     this->showTriangulationNodes = false;
     this->showVoronoi = false;
+    this->showFragments = false;
+    this->currentObject = 0;
     this->voronoiCell = 0;
+    this->fragment = 0;
 }
 
 ViewWidget::~ViewWidget()
@@ -51,6 +54,7 @@ void ViewWidget::paintGL()
     if (this->showSuperTetra) this->drawSuperTetra();
     else if (this->showTriangulation) this->drawTriangulation();
     if (this->showVoronoi) this->drawVoronoi();
+    if (this->showFragments) this->drawFragment();
     this->drawRandomPoints();
     this->drawModel();
 
@@ -73,6 +77,8 @@ void ViewWidget::resizeGL(int w, int h)
 
 void ViewWidget::loadModel(QString fileName)
 {
+    SolidObject * object = new SolidObject();
+
     if (fileName.length() == 0)
     {
         fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
@@ -82,7 +88,9 @@ void ViewWidget::loadModel(QString fileName)
     if (fileName.length() == 0) {
         exit(0);
     }
-    this->object.loadModel(fileName);
+
+    object->loadModel(fileName);
+    this->objects.push_back(object);
 }
 
 void ViewWidget::drawModel()
@@ -90,17 +98,28 @@ void ViewWidget::drawModel()
     QList<int> * face;
     float * vertex;
 
-    for (int i = 0; i < this->object.faces.size(); i++) {
-        //glColor3f((float)i / (float)this->object.faces.size(),0,0);
-        glColor3f(255.0, 0, 0);
-        glBegin(GL_LINE_LOOP);
-        face = this->object.faces.at(i);
-        for (int j = 0; j < face->size(); j++) {
-            vertex = this->object.vertices.at(face->at(j) - 1);
-            glVertex3f(vertex[0], vertex[1], vertex[2]);
+    SolidObject * object;
+
+    for (int i = 0; i < this->objects.size(); i++) {
+        object = this->objects.at(i);
+
+        for (int j = 0; j < object->faces.size(); j++) {
+            //glColor3f((float)j / (float)object->faces.size(),0,0);
+            if (i == this->currentObject) {
+                glColor3f(255.0, 0, 0);
+            } else {
+                glColor3f(0, 0, 255.0);
+            }
+            glBegin(GL_LINE_LOOP);
+            face = object->faces.at(j);
+            for (int k = 0; k < face->size(); k++) {
+                vertex = object->vertices.at(face->at(k) - 1);
+                glVertex3f(vertex[0], vertex[1], vertex[2]);
+            }
+            glEnd();
         }
-        glEnd();
     }
+
 }
 
 void ViewWidget::drawBoundingBox()
@@ -108,12 +127,15 @@ void ViewWidget::drawBoundingBox()
     QList<int> * face;
     float * vertex;
 
-    for (int i = 0; i < this->object.BBfaces.size(); i++) {
+    SolidObject * object;
+    object = this->objects.at(this->currentObject);
+
+    for (int i = 0; i < object->BBfaces.size(); i++) {
         glColor3f(0, 255.0,0);
         glBegin(GL_LINE_LOOP);
-        face = this->object.BBfaces.at(i);
+        face = object->BBfaces.at(i);
         for (int j = 0; j < face->size(); j++) {
-            vertex = this->object.BBvertices.at(face->at(j) - 1);
+            vertex = object->BBvertices.at(face->at(j) - 1);
             glVertex3f(vertex[0], vertex[1], vertex[2]);
         }
         glEnd();
@@ -125,12 +147,15 @@ void ViewWidget::drawSuperTetra()
     QList<int> * face;
     float * vertex;
 
-    for (int i = 0; i < this->object.superTetraFaces.size(); i++) {
+    SolidObject * object;
+    object = this->objects.at(this->currentObject);
+
+    for (int i = 0; i < object->superTetraFaces.size(); i++) {
         glColor3f(255.0, 255.0,0);
         glBegin(GL_LINE_LOOP);
-        face = this->object.superTetraFaces.at(i);
+        face = object->superTetraFaces.at(i);
         for (int j = 0; j < face->size(); j++) {
-            vertex = this->object.superTetraVertices.at(face->at(j) - 1);
+            vertex = object->superTetraVertices.at(face->at(j) - 1);
             glVertex3f(vertex[0], vertex[1], vertex[2]);
         }
         glEnd();
@@ -141,13 +166,16 @@ void ViewWidget::drawTriangulation() {
     QList<int> * face;
     float * vertex;
 
-    for (int i = 0; i < this->object.triangulationFaces.size(); i++) {
-        if (this->object.triangulationWallsUsage.at(i) == 0) continue;
+    SolidObject * object;
+    object = this->objects.at(this->currentObject);
+
+    for (int i = 0; i < object->triangulationFaces.size(); i++) {
+        if (object->triangulationWallsUsage.at(i) == 0) continue;
         glColor3f(255.0, 255.0,0);
         glBegin(GL_LINE_LOOP);
-        face = this->object.triangulationFaces.at(i);
+        face = object->triangulationFaces.at(i);
         for (int j = 0; j < face->size(); j++) {
-            vertex = this->object.triangulationVertices.at(face->at(j) - 1);
+            vertex = object->triangulationVertices.at(face->at(j) - 1);
             glVertex3f(vertex[0], vertex[1], vertex[2]);
         }
         glEnd();
@@ -155,64 +183,85 @@ void ViewWidget::drawTriangulation() {
 
     if (!this->showTriangulationNodes) return;
 
-    for (int i = 0; i < this->object.triangulationCells.size(); i++) {
-        if (this->object.triangulationCells.at(i) == NULL) continue;
+    for (int i = 0; i < object->triangulationCells.size(); i++) {
+        if (object->triangulationCells.at(i) == NULL) continue;
         glBegin(GL_LINES);
         glColor3f(0, 255.0, 0);
-        glVertex3f(this->object.triangulationCells.at(i)->center[0], this->object.triangulationCells.at(i)->center[1], this->object.triangulationCells.at(i)->center[2]);
-        glVertex3f(this->object.triangulationCells.at(i)->v1[0], this->object.triangulationCells.at(i)->v1[1], this->object.triangulationCells.at(i)->v1[2]);
+        glVertex3f(object->triangulationCells.at(i)->center[0], object->triangulationCells.at(i)->center[1], object->triangulationCells.at(i)->center[2]);
+        glVertex3f(object->triangulationCells.at(i)->v1[0], object->triangulationCells.at(i)->v1[1], object->triangulationCells.at(i)->v1[2]);
 
-        glVertex3f(this->object.triangulationCells.at(i)->center[0], this->object.triangulationCells.at(i)->center[1], this->object.triangulationCells.at(i)->center[2]);
-        glVertex3f(this->object.triangulationCells.at(i)->v2[0], this->object.triangulationCells.at(i)->v2[1], this->object.triangulationCells.at(i)->v2[2]);
+        glVertex3f(object->triangulationCells.at(i)->center[0], object->triangulationCells.at(i)->center[1], object->triangulationCells.at(i)->center[2]);
+        glVertex3f(object->triangulationCells.at(i)->v2[0], object->triangulationCells.at(i)->v2[1], object->triangulationCells.at(i)->v2[2]);
 
-        glVertex3f(this->object.triangulationCells.at(i)->center[0], this->object.triangulationCells.at(i)->center[1], this->object.triangulationCells.at(i)->center[2]);
-        glVertex3f(this->object.triangulationCells.at(i)->v3[0], this->object.triangulationCells.at(i)->v3[1], this->object.triangulationCells.at(i)->v3[2]);
+        glVertex3f(object->triangulationCells.at(i)->center[0], object->triangulationCells.at(i)->center[1], object->triangulationCells.at(i)->center[2]);
+        glVertex3f(object->triangulationCells.at(i)->v3[0], object->triangulationCells.at(i)->v3[1], object->triangulationCells.at(i)->v3[2]);
 
-        glVertex3f(this->object.triangulationCells.at(i)->center[0], this->object.triangulationCells.at(i)->center[1], this->object.triangulationCells.at(i)->center[2]);
-        glVertex3f(this->object.triangulationCells.at(i)->v4[0], this->object.triangulationCells.at(i)->v4[1], this->object.triangulationCells.at(i)->v4[2]);
+        glVertex3f(object->triangulationCells.at(i)->center[0], object->triangulationCells.at(i)->center[1], object->triangulationCells.at(i)->center[2]);
+        glVertex3f(object->triangulationCells.at(i)->v4[0], object->triangulationCells.at(i)->v4[1], object->triangulationCells.at(i)->v4[2]);
         glEnd();
     }
 }
 
 void ViewWidget::drawVoronoi()
 {
-    VoronoiCell * cell = this->object.vCells.at(this->voronoiCell);
+    VoronoiCell * cell;
     VoronoiFace * face;
     VoronoiHalfEdge * halfEdgeHandler;
     VoronoiVertex * vertexHandler;
     float * vertex;
 
-    for (int i = 0; i < cell->faces.size(); i++) {
-        face = cell->faces.at(i);
-        halfEdgeHandler = face->halfEdge;
+    SolidObject * object;
+    object = this->objects.at(this->currentObject);
 
-        std::cout << "drawing face " << face << std::endl;
+    int j;
+    int size;
 
-        glColor3f(0, 255.0,0);
-        glBegin(GL_LINE_LOOP);
+    if (object->vCells.empty()) return;
 
-        do {
-            if (halfEdgeHandler == NULL) {
-                std::cout << "empty hander" << std::endl;
-                break;
-            }
-            if (halfEdgeHandler->next == NULL) {
-                std::cout << "empty next" << std::endl;
-                break;
-            }
+    size = object->vCells.size();
 
-            vertexHandler = halfEdgeHandler->v;
-            vertex = vertexHandler->coords;
-            if (vertex == NULL) {
-                std::cout << "empty vertex" << std::endl;
-                break;
-            }
-            glVertex3f(vertex[0], vertex[1], vertex[2]);
+    if (this->voronoiCell == size) {
+        j = 0;
+    } else {
+        j = this->voronoiCell;
+        size = this->voronoiCell + 1;
+    }
 
-            halfEdgeHandler = halfEdgeHandler->next;
-        } while (halfEdgeHandler != face->halfEdge);
+    for (; j < size; j++) {
+        cell = object->vCells.at(j);
 
-        glEnd();
+        for (int i = 0; i < cell->faces.size(); i++) {
+            face = cell->faces.at(i);
+            halfEdgeHandler = face->halfEdge;
+
+            //std::cout << "drawing face " << face << std::endl;
+
+            glColor3f(0, 255.0,0);
+            glBegin(GL_LINE_LOOP);
+
+            do {
+                if (halfEdgeHandler == NULL) {
+                    //std::cout << "empty hander" << std::endl;
+                    break;
+                }
+                if (halfEdgeHandler->next == NULL) {
+                    //std::cout << "empty next" << std::endl;
+                    break;
+                }
+
+                vertexHandler = halfEdgeHandler->v;
+                vertex = vertexHandler->coords;
+                if (vertex == NULL) {
+                    //std::cout << "empty vertex" << std::endl;
+                    break;
+                }
+                glVertex3f(vertex[0], vertex[1], vertex[2]);
+
+                halfEdgeHandler = halfEdgeHandler->next;
+            } while (halfEdgeHandler != face->halfEdge);
+
+            glEnd();
+        }
     }
 
 //    VoronoiSplitEdge * seHandler;
@@ -226,6 +275,65 @@ void ViewWidget::drawVoronoi()
 //    }
 //    glEnd();
 }
+
+void ViewWidget::drawFragment()
+{
+    VoronoiCell * cell;
+    VoronoiFace * face;
+    VoronoiHalfEdge * halfEdgeHandler;
+    VoronoiVertex * vertexHandler;
+    float * vertex;
+
+    SolidObject * object;
+    object = this->objects.at(this->currentObject);
+
+    int j;
+    int size;
+
+    if (object->fragments.empty()) return;
+
+    size = object->fragments.size();
+
+    if (this->fragment == size) {
+        j = 0;
+    } else {
+        j = this->fragment;
+        size = this->fragment + 1;
+    }
+
+    for (; j < size; j++) {
+        cell = object->fragments.at(j);
+
+        for (int i = 0; i < cell->faces.size(); i++) {
+            face = cell->faces.at(i);
+            halfEdgeHandler = face->halfEdge;
+
+            glColor3f(0, 255.0,0);
+            glBegin(GL_LINE_LOOP);
+
+            do {
+                if (halfEdgeHandler == NULL) {
+                    break;
+                }
+                if (halfEdgeHandler->next == NULL) {
+                    break;
+                }
+
+                vertexHandler = halfEdgeHandler->v;
+                vertex = vertexHandler->coords;
+                if (vertex == NULL) {
+                    break;
+                }
+                glVertex3f(vertex[0], vertex[1], vertex[2]);
+
+                halfEdgeHandler = halfEdgeHandler->next;
+            } while (halfEdgeHandler != face->halfEdge);
+
+            glEnd();
+        }
+    }
+}
+
 
 void ViewWidget::drawAxles()
 {
@@ -243,11 +351,14 @@ void ViewWidget::drawAxles()
 }
 
 void ViewWidget::drawRandomPoints() {
-    if (this->object.randomPoints.empty()) return;
+    SolidObject * object;
+    object = this->objects.at(this->currentObject);
+
+    if (object->randomPoints.empty()) return;
 
     glBegin(GL_POINTS);
     glColor3f(1,0,1);
-    for (QList<float *>::iterator i = this->object.randomPoints.begin(); i != this->object.randomPoints.end(); i++) {
+    for (QList<float *>::iterator i = object->randomPoints.begin(); i != object->randomPoints.end(); i++) {
         glVertex3f((*i)[0], (*i)[1], (*i)[2]);
     }
     glEnd();
@@ -298,6 +409,9 @@ void ViewWidget::mousePressEvent(QMouseEvent *e)
 
 void ViewWidget::keyPressEvent(QKeyEvent *e)
 {
+    SolidObject * object;
+    object = this->objects.at(this->currentObject);
+
     switch (e->key())
     {
         case Qt::Key_A:
@@ -309,14 +423,15 @@ void ViewWidget::keyPressEvent(QKeyEvent *e)
             this->updateGL();
             break;
         case Qt::Key_C:
-            this->object.destroyRandomPoints();
+            object->destroyRandomPoints();
             this->updateGL();
             break;
         case Qt::Key_R:
             this->voronoiCell = 0;
-            this->object.generateRandomPoints(2);
-            this->object.createTriangulation();
-            this->object.createVoronoi();
+            object->generateRandomPoints(15);
+            object->createTriangulation();
+            object->createVoronoi();
+            object->createFragments();
             this->updateGL();
             break;
         case Qt::Key_T:
@@ -325,12 +440,50 @@ void ViewWidget::keyPressEvent(QKeyEvent *e)
             this->updateGL();
             break;
         case Qt::Key_U:
-            if (this->object.vCells.size() > 0) {
+            if (object->vCells.size() > 0) {
                 this->showVoronoi = true;
                 this->voronoiCell++;
-                this->voronoiCell = this->voronoiCell % this->object.vCells.size();
+                this->voronoiCell = this->voronoiCell % (object->vCells.size() + 1);
                 this->updateGL();
             }
+            break;
+        case Qt::Key_F:
+            if (object->fragments.size() > 0) {
+                this->showFragments = true;
+                this->fragment++;
+                this->fragment = this->fragment % (object->fragments.size() + 1);
+                this->updateGL();
+            }
+            break;
+        case Qt::Key_I:
+            this->showVoronoi = false;
+            this->showFragments = false;
+            this->updateGL();
+            break;
+        case Qt::Key_G:
+            if (this->objects.size() > 0) {
+                this->currentObject++;
+                this->currentObject = this->currentObject % this->objects.size();
+                this->fragment = 0;
+                this->voronoiCell = 0;
+                this->showFragments = false;
+                this->showVoronoi = false;
+                this->showTriangulation = false;
+                this->showTriangulationNodes = false;
+                this->updateGL();
+                std::cout << this->currentObject << std::endl;
+            }
+            break;
+        case Qt::Key_S:
+            this->splitCurrentObject();
+            this->currentObject = 0;
+            this->fragment = 0;
+            this->voronoiCell = 0;
+            this->showFragments = false;
+            this->showVoronoi = false;
+            this->showTriangulation = false;
+            this->showTriangulationNodes = false;
+            this->updateGL();
             break;
         case Qt::Key_Y:
             this->showTriangulation = !this->showTriangulation;
@@ -355,4 +508,24 @@ void ViewWidget::wheelEvent(QWheelEvent *e)
 {
     this->distance = (double)e->delta() / 80.0;
     this->updateGL();
+}
+
+void ViewWidget::splitCurrentObject()
+{
+    QList<SolidObject *> * newObjects;
+    SolidObject * object;
+    object = this->objects.at(this->currentObject);
+
+    newObjects = object->split();
+
+    if (!newObjects->empty()) {
+        this->objects.removeAt(this->currentObject);
+
+        while (!newObjects->empty()) {
+            this->objects.push_back(newObjects->front());
+            newObjects->pop_front();
+        }
+    }
+
+    delete newObjects;
 }

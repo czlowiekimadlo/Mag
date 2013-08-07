@@ -15,10 +15,13 @@ public:
     ~SolidObject();
 
     void loadModel(QString);
+    void loadModel(VoronoiCell *);
     void generateRandomPoints(int);
     void destroyRandomPoints();
     void createTriangulation();
     void createVoronoi();
+    void createFragments();
+    QList<SolidObject *> * split();
 
     QList<float *> vertices;
     QList<float *> normals;
@@ -37,16 +40,15 @@ public:
     QList<Tetrahedron *> triangulationCells;
     QList<int> triangulationWallsUsage;
 
-    QList<float *> voronoiVertices;
-    QList< QList<int> * > voronoiFaces;
-    QList< QList<int> * > voronoiCells;
     QList<VoronoiCell *> vCells;
+    QList<VoronoiCell *> fragments;
 
 
 protected:
     void flushPointsList(QList<float *> *);
     void flushFacesList(QList< QList<int> * > *);
     void flushValuesList(QList<int> *);
+    void processModel(float, float, float, float, float, float);
 
     void cpyVertices(QList<float *> *, QList<float *> *);
     void cpyFaces(QList< QList<int> * > *, QList< QList<int> * > *);

@@ -63,3 +63,31 @@ Lista operacji do zrobienia:
 - być zajebistym
 
 Dla ułatwienia dalszych obliczeń, do każdej ściany należy przypisać płaszczyznę, z której powstała. Pomoże to w cięciu właściwej figury z użyciem uzyskanych komórek.
+
+
+
+
+
+
+
+
+
+Podział bryły z użyciem stworzonych komórek voronoi
+
+- utworzyć voronoi cell bazując na figurze a nie na BB - OK
+- wybrać komórkę - OK
+- dzielić komórkę używając płaszczyzn w ścianach komórki - OK
+- utworzyć z komórki nowy solid object - OK
+- zmienić jeden SO na listę - OK
+- wybór SO i uruchamianie akcji na wybranym - OK
+
+
+
+
+
+
+
+
+
+
+

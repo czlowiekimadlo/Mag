@@ -25,11 +25,14 @@ public:
     bool showTriangulation;
     bool showTriangulationNodes;
     bool showVoronoi;
+    bool showFragments;
+    int currentObject;
     int voronoiCell;
+    int fragment;
 
 
 protected:
-    SolidObject object;
+    QList<SolidObject *> objects;
 
     int lastX, lastY;
     double angleX, angleY, angleZ, distance;
@@ -42,6 +45,8 @@ protected:
     void drawSuperTetra();
     void drawTriangulation();
     void drawVoronoi();
+    void drawFragment();
+    void splitCurrentObject();
 
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);

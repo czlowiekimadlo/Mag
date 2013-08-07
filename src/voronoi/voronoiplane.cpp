@@ -21,6 +21,11 @@ VoronoiPlane::~VoronoiPlane()
     delete this->normal;
 }
 
+VoronoiPlane * VoronoiPlane::getCopy()
+{
+    return new VoronoiPlane(this->referencePoint->getCopy(), this->normal->getCopy());
+}
+
 //  1 - in the front
 // -1 - in the back
 //  0 - on the plane
