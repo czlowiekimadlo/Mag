@@ -4,8 +4,6 @@
 #
 #-------------------------------------------------
 
-QMAKE_CXXFLAGS += -frounding-math
-
 QT       += core gui
 QT       += opengl
 
