@@ -40,4 +40,3 @@ HEADERS  += src/mainwindow.h \
 FORMS    += src/mainwindow.ui
 
 LIBS     += -lGLU
-LIBS     += -lCGAL -lCGAL_Core
