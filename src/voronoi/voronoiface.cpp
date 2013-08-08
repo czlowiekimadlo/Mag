@@ -14,6 +14,17 @@ VoronoiFace::~VoronoiFace()
     }
 }
 
+/**
+ * Check if plane is cutting face
+ *  2 - unforseen situation, consider an error
+ *  1 - whole face is in front
+ *  0 - plane is cutting face
+ * -1 - whole face is behind
+ *
+ * @brief VoronoiFace::isCut
+ * @param p plane object
+ * @return intersection status
+ */
 int VoronoiFace::isCut(VoronoiPlane *p)
 {
     VoronoiVertex * v;

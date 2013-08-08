@@ -5,13 +5,22 @@ VoronoiCell::VoronoiCell()
 
 }
 
+/**
+ * Destructor, center is not deleted on purpose
+ *
+ * @brief VoronoiCell::~VoronoiCell
+ */
 VoronoiCell::~VoronoiCell()
 {
     this->flushCell();
     this->center = 0;
-    this->splitEdges = 0;
 }
 
+/**
+ * Method clearing all data structures allowing to generate different cell configuration
+ *
+ * @brief VoronoiCell::flushCell
+ */
 void VoronoiCell::flushCell()
 {
     VoronoiVertex * v;
@@ -41,6 +50,13 @@ void VoronoiCell::flushCell()
     }
 }
 
+/**
+ * Build initial cell mesh based on SolidObject data structures
+ *
+ * @brief VoronoiCell::buildMesh
+ * @param verts list of float[3] vertices
+ * @param facets list of facets
+ */
 void VoronoiCell::buildMesh(QList<float *> *verts, QList<QList<int> *> *facets)
 {
     VoronoiVertex * v;
@@ -85,7 +101,12 @@ void VoronoiCell::buildMesh(QList<float *> *verts, QList<QList<int> *> *facets)
 }
 
 
-//go through all the halfedges and find matching pairs
+/**
+ * Method for finding matching pairs of directed half edges into whole edges
+ *
+ * @brief VoronoiCell::pairHalfEdges
+ * @param l list of half-edges to pair
+ */
 void VoronoiCell::pairHalfEdges(QList<VoronoiHalfEdge *> *l)
 {
     VoronoiHalfEdge * he1;
@@ -115,6 +136,14 @@ void VoronoiCell::pairHalfEdges(QList<VoronoiHalfEdge *> *l)
 }
 
 //associate each pair of halfedges to a physical edge.
+/**
+ * Method for creating whole edges objects from half-edges
+ * Needs half-edges to be paired
+ *
+ * @brief VoronoiCell::createEdges
+ * @param hel list of half-edges
+ * @param el list of edges, new edges will be appended to this list
+ */
 void VoronoiCell::createEdges(QList<VoronoiHalfEdge *> *hel, QList<VoronoiEdge *> *el)
 {
     VoronoiHalfEdge * he1;
@@ -141,6 +170,14 @@ void VoronoiCell::createEdges(QList<VoronoiHalfEdge *> *hel, QList<VoronoiEdge *
 }
 
 // check all edges for intersection with a plane
+/**
+ * Search current list of edges for intersections with plane and
+ * calculate intersection points
+ *
+ * @brief VoronoiCell::retrieveSplitEdges
+ * @param p plane object
+ * @return list of split-edge objects with intersection points
+ */
 QList<VoronoiSplitEdge *> * VoronoiCell::retrieveSplitEdges(VoronoiPlane *p)
 {
     VoronoiEdge * e;
@@ -157,6 +194,16 @@ QList<VoronoiSplitEdge *> * VoronoiCell::retrieveSplitEdges(VoronoiPlane *p)
     return splitEdges;
 }
 
+/**
+ * Verify if plane is intersecting with current mesh
+ *  1 - whole mesh in front of plane
+ *  0 - plane cutting mesh
+ * -1 - whole mesh behind plane
+ *
+ * @brief VoronoiCell::isCut
+ * @param p plane object
+ * @return intersection status
+ */
 int VoronoiCell::isCut(VoronoiPlane * p)
 {
     VoronoiVertex * v;
@@ -189,6 +236,15 @@ int VoronoiCell::isCut(VoronoiPlane * p)
     throw 2;
 }
 
+/**
+ * Find instance of given vertex in list or create new one and add it
+ *
+ * @brief VoronoiCell::getNewVertex
+ * @param v vertex object
+ * @param newVertices list of newly created vertices
+ * @param newFaceVertices list of newly created vertices for new cut face
+ * @return vertex object
+ */
 VoronoiVertex * VoronoiCell::getNewVertex(VoronoiVertex * v, QList<VoronoiVertex *> * newVertices, QList<VoronoiVertex *> * newFaceVertices)
 {
     VoronoiVertex * vertexHandler;
@@ -210,6 +266,14 @@ VoronoiVertex * VoronoiCell::getNewVertex(VoronoiVertex * v, QList<VoronoiVertex
     return vertexHandler;
 }
 
+/**
+ * Search split-edge for given half-edge
+ *
+ * @brief VoronoiCell::getSplitEdge
+ * @param halfEdge half-edge object
+ * @param splitEdges list of calculated split-edges
+ * @return split-edge for half-edge or NULL if not found
+ */
 VoronoiSplitEdge * VoronoiCell::getSplitEdge(VoronoiHalfEdge * halfEdge, QList<VoronoiSplitEdge *> * splitEdges)
 {
     for(int i = 0; i < splitEdges->size(); i++) {
@@ -221,6 +285,18 @@ VoronoiSplitEdge * VoronoiCell::getSplitEdge(VoronoiHalfEdge * halfEdge, QList<V
     return NULL;
 }
 
+/**
+ * Create new half-edge for face
+ *
+ * @brief VoronoiCell::createNewHalfEdge
+ * @param baseVertex vertex
+ * @param previousHalfEdge previous half-edge in chain
+ * @param face face for which half-edge is added
+ * @param newVertices list of new vertices
+ * @param newHalfEdges list of new half-edges
+ * @param newFaceVertices list of new cut-face vertices
+ * @return new half-edge object
+ */
 VoronoiHalfEdge * VoronoiCell::createNewHalfEdge(VoronoiVertex * baseVertex, VoronoiHalfEdge * previousHalfEdge, VoronoiFace * face, QList<VoronoiVertex *> * newVertices, QList<VoronoiHalfEdge *> * newHalfEdges, QList<VoronoiVertex *> * newFaceVertices)
 {
     VoronoiVertex * newVertex;
@@ -243,6 +319,18 @@ VoronoiHalfEdge * VoronoiCell::createNewHalfEdge(VoronoiVertex * baseVertex, Vor
     return newHalfEdge;
 }
 
+/**
+ * Analyze face and create new one split by plane
+ *
+ * @brief VoronoiCell::splitFace
+ * @param f old face
+ * @param p plane
+ * @param newVertices list of new vertices
+ * @param newHalfEdges list of new half-edges
+ * @param newFaces list of new faces
+ * @param splitEdges list of calculated split-edges
+ * @param newFaceVertices list of new cut-face vertices
+ */
 void VoronoiCell::splitFace(VoronoiFace * f, VoronoiPlane * p, QList<VoronoiVertex *> * newVertices, QList<VoronoiHalfEdge *> * newHalfEdges, QList<VoronoiFace *> * newFaces, QList<VoronoiSplitEdge *> * splitEdges, QList<VoronoiVertex *> * newFaceVertices)
 {
     int cut;
@@ -331,6 +419,16 @@ void VoronoiCell::splitFace(VoronoiFace * f, VoronoiPlane * p, QList<VoronoiVert
     newFaces->push_back(newFace);
 }
 
+/**
+ * Build new cut-face on plane
+ *
+ * @brief VoronoiCell::buildCutFace
+ * @param newHalfEdges list of new half-edges
+ * @param newFaces list of new faces
+ * @param newFaceVertices list of new cut-face vertices
+ * @param plane cut plane
+ * @param newEdges list of new edges
+ */
 void VoronoiCell::buildCutFace(QList<VoronoiHalfEdge *> * newHalfEdges, QList<VoronoiFace *> * newFaces, QList<VoronoiVertex *> * newFaceVertices, VoronoiPlane * plane, QList<VoronoiEdge *> * newEdges)
 {
     int size = newHalfEdges->size();
@@ -416,6 +514,15 @@ void VoronoiCell::buildCutFace(QList<VoronoiHalfEdge *> * newHalfEdges, QList<Vo
     newFaces->push_back(newFace);
 }
 
+/**
+ * Replace current cell structure with provided one
+ *
+ * @brief VoronoiCell::persistElements
+ * @param newVertices list of new vertices
+ * @param newHalfEdges list of new half-edges
+ * @param newEdges list of new edges
+ * @param newFaces list of new faces
+ */
 void VoronoiCell::persistElements(QList<VoronoiVertex *> * newVertices, QList<VoronoiHalfEdge *> * newHalfEdges, QList<VoronoiEdge *> * newEdges, QList<VoronoiFace *> * newFaces)
 {
     this->flushCell();
@@ -452,6 +559,12 @@ void VoronoiCell::persistElements(QList<VoronoiVertex *> * newVertices, QList<Vo
     }
 }
 
+/**
+ * Split mesh using plane
+ *
+ * @brief VoronoiCell::splitMesh
+ * @param p plane object
+ */
 void VoronoiCell::splitMesh(VoronoiPlane * p)
 {
     int cut;

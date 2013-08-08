@@ -114,6 +114,13 @@ void Tetrahedron::calculateCircumcenter()
     this->radius = xcirca * xcirca + ycirca * ycirca + zcirca * zcirca;
 }
 
+/**
+ * Check if point is inside/on the sphere or outside
+ *
+ * @brief Tetrahedron::isInRange
+ * @param v
+ * @return range status
+ */
 bool Tetrahedron::isInRange(float * v)
 {
     float a,b,c,r;
@@ -130,6 +137,13 @@ bool Tetrahedron::isInRange(float * v)
     }
 }
 
+/**
+ * Check if vertex is one of tetrahedrons vertices
+ *
+ * @brief Tetrahedron::containsVertex
+ * @param index
+ * @return contains status
+ */
 bool Tetrahedron::containsVertex(int index) {
     for (int i = 0; i < 4; i++) {
         if (this->facesList->at(this->faces[i] - 1)->indexOf(index) != -1) {

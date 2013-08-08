@@ -26,7 +26,6 @@ public:
     QList<VoronoiFace *> faces;
     QList<VoronoiHalfEdge *> halfEdges;
     QList<VoronoiEdge *> edges;
-    QList<VoronoiSplitEdge *> * splitEdges;
 
     VoronoiVertex * center;
 

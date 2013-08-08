@@ -39,6 +39,12 @@ SolidObject::~SolidObject() {
     this->destroyRandomPoints();
 }
 
+/**
+ * Clear list of points
+ *
+ * @brief SolidObject::flushPointsList
+ * @param list
+ */
 void SolidObject::flushPointsList(QList<float *> *list) {
     if (list == NULL) return;
     float *v;
@@ -48,6 +54,13 @@ void SolidObject::flushPointsList(QList<float *> *list) {
         list->pop_front();
     }
 }
+
+/**
+ * Clear list of faces
+ *
+ * @brief SolidObject::flushFacesList
+ * @param list
+ */
 void SolidObject::flushFacesList(QList< QList<int> *> *list) {
     if (list == NULL) return;
     QList<int> * f;
@@ -57,6 +70,13 @@ void SolidObject::flushFacesList(QList< QList<int> *> *list) {
         list->pop_front();
     }
 }
+
+/**
+ * Flush list of integers
+ *
+ * @brief SolidObject::flushValuesList
+ * @param list
+ */
 void SolidObject::flushValuesList(QList<int> *list) {
     if (list == NULL) return;
     while (!list->empty()) {
@@ -64,6 +84,13 @@ void SolidObject::flushValuesList(QList<int> *list) {
     }
 }
 
+/**
+ * Copy faces between lists
+ *
+ * @brief SolidObject::cpyFaces
+ * @param source
+ * @param destination
+ */
 void SolidObject::cpyFaces(QList< QList<int> * > *source, QList< QList<int> * > *destination) {
     QList<int> * f;
 
@@ -76,6 +103,14 @@ void SolidObject::cpyFaces(QList< QList<int> * > *source, QList< QList<int> * > 
         destination->push_back(f);
     }
 }
+
+/**
+ * Copy vertices between lists
+ *
+ * @brief SolidObject::cpyVertices
+ * @param source
+ * @param destination
+ */
 void SolidObject::cpyVertices(QList<float *> *source, QList<float *> *destination) {
     float *v;
 
@@ -90,6 +125,12 @@ void SolidObject::cpyVertices(QList<float *> *source, QList<float *> *destinatio
 
 }
 
+/**
+ * Load object from .obj file provided by fileName
+ *
+ * @brief SolidObject::loadModel
+ * @param fileName
+ */
 void SolidObject::loadModel(QString fileName) {
     QFile file(fileName);
     QString line;
@@ -142,6 +183,8 @@ void SolidObject::loadModel(QString fileName) {
               }
               this->faces.push_back(face);
           }
+
+          //normal vectors are not loaded
         }
         file.close();
 
@@ -149,6 +192,12 @@ void SolidObject::loadModel(QString fileName) {
     }
 }
 
+/**
+ * Load object structure from voronoi cell
+ *
+ * @brief SolidObject::loadModel
+ * @param c
+ */
 void SolidObject::loadModel(VoronoiCell * c)
 {
     VoronoiVertex * vertexHandler;
@@ -206,6 +255,19 @@ void SolidObject::loadModel(VoronoiCell * c)
     }
 }
 
+/**
+ * Process model using collected extreme values
+ * - create bounding box
+ * - create super-tetrahedron
+ *
+ * @brief SolidObject::processModel
+ * @param minX
+ * @param maxX
+ * @param minY
+ * @param maxY
+ * @param minZ
+ * @param maxZ
+ */
 void SolidObject::processModel(float minX, float maxX, float minY, float maxY, float minZ, float maxZ)
 {
     QList<int> * face;
@@ -356,6 +418,12 @@ void SolidObject::processModel(float minX, float maxX, float minY, float maxY, f
     this->superTetraFaces.push_back(face);
 }
 
+/**
+ * Generate number of random points by random weighted average
+ *
+ * @brief SolidObject::generateRandomPoints
+ * @param amount
+ */
 void SolidObject::generateRandomPoints(int amount)
 {
     QList<float *>::iterator it;
@@ -413,12 +481,21 @@ void SolidObject::generateRandomPoints(int amount)
 
 }
 
+/**
+ * Clear list of random points
+ *
+ * @brief SolidObject::destroyRandomPoints
+ */
 void SolidObject::destroyRandomPoints()
 {
     this->flushPointsList(&this->randomPoints);
 }
 
-
+/**
+ * Calculate delaunay triangulation
+ *
+ * @brief SolidObject::createTriangulation
+ */
 void SolidObject::createTriangulation() {
     if (this->randomPoints.empty()) return;
 
@@ -573,6 +650,11 @@ void SolidObject::createTriangulation() {
     }
 }
 
+/**
+ * Calculate voronoi division of space inside bounding box
+ *
+ * @brief SolidObject::createVoronoi
+ */
 void SolidObject::createVoronoi()
 {
     VoronoiCell * c;
@@ -616,6 +698,12 @@ void SolidObject::createVoronoi()
     delete v2;
 }
 
+/**
+ * Calculate fragments of mesh using voronoi cells
+ * Requires createVoronoi() to be run first
+ *
+ * @brief SolidObject::createFragments
+ */
 void SolidObject::createFragments()
 {
     VoronoiCell * cell;
@@ -649,6 +737,13 @@ void SolidObject::createFragments()
     }
 }
 
+/**
+ * Create list of new SolidObjects created from fragments list
+ * Requires createFragments() to be run first
+ *
+ * @brief SolidObject::split
+ * @return
+ */
 QList<SolidObject *> * SolidObject::split()
 {
     QList<SolidObject *> * objects = new QList<SolidObject *>;

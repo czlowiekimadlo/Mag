@@ -1,5 +1,6 @@
 #include "voronoiplane.h"
 
+
 VoronoiPlane::VoronoiPlane(VoronoiVertex * point, VoronoiVertex * normal)
 {
     VoronoiVertex * n = normal->getCopy();
@@ -21,14 +22,27 @@ VoronoiPlane::~VoronoiPlane()
     delete this->normal;
 }
 
+/**
+ * Get new instance of plane object that is a copy of current one
+ *
+ * @brief VoronoiPlane::getCopy
+ * @return plane object
+ */
 VoronoiPlane * VoronoiPlane::getCopy()
 {
     return new VoronoiPlane(this->referencePoint->getCopy(), this->normal->getCopy());
 }
 
-//  1 - in the front
-// -1 - in the back
-//  0 - on the plane
+/**
+ * Check on which side of the plane is the vertex
+ *  1 - in front of plane
+ *  0 - on the plane
+ * -1 - behind the plane
+ *
+ * @brief VoronoiPlane::side
+ * @param v vertex
+ * @return position status
+ */
 int VoronoiPlane::side(VoronoiVertex *v)
 {
     VoronoiVertex v1;
@@ -56,11 +70,16 @@ int VoronoiPlane::side(VoronoiVertex *v)
     return 0;
 }
 
+/**
+ * Calculate the distance from vertex to the plane
+ *
+ * @brief VoronoiPlane::dist
+ * @param v vertex object
+ * @return absolute distance value
+ */
 float VoronoiPlane::dist(VoronoiVertex * v)
 {
     float d = this->a * v->coords[0] + this->b * v->coords[1] + this->c * v->coords[2] + this->d;
-    //std::cout << this->referencePoint->coords[0] << " " << v->coords[0] << std::endl;
-    //std::cout << this->a << " " << this->b << " " << this->c << " " << this->d << " " << std::endl;
     if (d < 0) d = -d;
     return d;
 }
