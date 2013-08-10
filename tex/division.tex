@@ -1,0 +1,120 @@
+% *** Uwaga *** Tekst w tym pliku nie ma specjalnie sensu i służy za twz. wypełniacz ***
+\documentclass[skorowidz,autorrok,backref,xodstep]{wmimgr}
+
+\usepackage{listings}
+\usepackage{color}
+\usepackage{alltt}
+\usepackage{floatrow}
+\usepackage{hyphenat}
+\usepackage{url}
+
+\newcommand\dbr{\discretionary{}{}{}}
+
+
+% Opcjonalnie identyfikator dokumentu (drukowany tylko z włączoną opcją `brudnopis'):
+\nrwersji {0.1}
+
+% Dane autora(ów):
+\author   {Wojciech Chojnacki}
+\nralbumu {369971}
+\email    {s367791@wmi.amu.edu.pl}
+
+% Tytuł pracy:
+\title    {Hierarchiczny model podziału obiektów}
+
+% Kierunek, tj. katedra/instytut promotora:
+\kierunek {Informatyka}
+
+% Rok obrony:
+\date     {2013}
+
+% Jeżeli nie podano miejsca zostanie wpisany `Sopot'
+\miejsce {Poznań}
+
+% Tytuł naukowy, imię i nazwisko promotora:
+\opiekun  {dr Wojciech Kowalewski}
+
+%
+% Miejsce na deklaracje własnych poleceń:
+\newcommand{\filename}[1]{\texttt{#1}}
+
+% Cytowanie przez numer (standard):
+%\bibliographystyle{plain}
+%
+% Jeżeli cytowanie autor-rok to np.:
+\bibliographystyle{papalike}
+%
+% Inne sposoby
+%\bibliographystyle{abbrv} %% standard
+%\bibliographystyle{acm} %% ACM transactions...
+%\bibliographystyle{elsart-harv} %% dziwaczny %%
+
+%%% zakomentuj \iffalse ... \fi (ostatnie, zaznaczone //pdfscreen) jeżeli chcesz włączyć pakiet pdfscreen:
+\def\SITI{SI/TI} %%%
+\def\ISTI{SI/TI} %%%
+\def\UTAUT{UTAUT} %%%
+
+\begin{document}
+
+%%
+%%\nocite{beebe,p.perl} %% dołącza niecytowane
+\nocite{*} %% ** dołącza wszystko **
+
+
+% Tytuł/spis treści
+\maketitle
+%
+% Wstęp
+\introduction
+
+Wstęp.
+
+\chapter{Cel Pracy}
+
+Zastosowania.
+
+Obecne rozwiązania.
+
+\chapter{Diagram Voronoi}
+
+Diagramy.
+
+\chapter{Triangulacja Delaunay}
+
+Triangulacje.
+
+\chapter{Przejście z Przestrzeni 2D do 3D}
+
+Przejście.
+
+\chapter{Implementacja i Wyniki}
+
+Kod.
+
+\chapter{Dalsze Prace}
+
+Optymalizacja implementacji.
+
+Podziały przez kotki/kulki.
+
+Przejście do płynu.
+
+Warunki zmiany algorytmu.
+
+Dystrybucja punktów.
+
+%\include bib.tex
+\bibliography{division}
+
+%
+% Spis tabel (jeżeli jest potrzebny):
+%\listoftables
+%
+% Spis rysunków (jeżeli jest potrzebny):
+\listoffigures
+
+%
+% Skorowidz (opcjonalnie)
+% \printindex
+
+\end{document}
