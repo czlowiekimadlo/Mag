@@ -1,5 +1,5 @@
 % *** Uwaga *** Tekst w tym pliku nie ma specjalnie sensu i służy za twz. wypełniacz ***
-\documentclass[skorowidz,autorrok,backref,xodstep]{wmimgr}
+\documentclass[skorowidz,autorrok,backref,xodstep,oswiadczenie]{wmimgr}
 
 \usepackage{listings}
 \usepackage{color}
@@ -7,6 +7,9 @@
 \usepackage{floatrow}
 \usepackage{hyphenat}
 \usepackage{url}
+\usepackage{mathtools}
+\usepackage{algorithmic}
+\usepackage[chapter]{algorithm}
 
 \newcommand\dbr{\discretionary{}{}{}}
 
@@ -60,24 +63,162 @@
 %%\nocite{beebe,p.perl} %% dołącza niecytowane
 \nocite{*} %% ** dołącza wszystko **
 
+% Streszczenie
+\begin{abstract}
+
+Streszczenie pracy.
+
+\end{abstract}
 
 % Tytuł/spis treści
 \maketitle
+
+%
+% Spis tabel (jeżeli jest potrzebny):
+%\listoftables
+%
+% Spis rysunków (jeżeli jest potrzebny):
+\listoffigures
+
+%
+% Skorowidz (opcjonalnie)
+% \printindex
+
 %
 % Wstęp
-\introduction
+\chapter{Wstęp}
 
-Wstęp.
-
-\chapter{Cel Pracy}
+Geneza tematu.
 
 Zastosowania.
 
 Obecne rozwiązania.
 
+
 \chapter{Diagram Voronoi}
 
-Diagramy.
+W niniejszym rozdziale wprowadzone zostanie pojęcie \emph{Diagramu Voronoi}, znanego także jako \emph{Teselacją Dirichleta}. Omówione zostaną najważniejsze właściwości diagramu, jego praktyczne zastosowania oraz metoda tworzenia w przestrzeni dwuwymiarowej.
+
+\section{Definicja}
+
+Opiszmy odległość euklidesową między punktami $p$ i $q$ jako funkcję $dist(p,q)$. Na płaszczyźnie otrzymujemy
+\begin{equation}
+dist(p,q) := \sqrt{( p_{x} - q_{x} )^2 + (p_{y} - q_{y})^2}
+\end{equation}
+
+Niech $P:=\{ p_{1},p_{2},...,p_{n} \}$ będzie zbiorem punktów na~płaszczyźnie euklidesowej $E$. Zbiór ten nazywamy zbiorem centrów. \emph{Komórką Voronoi} dla punktu~$p_{i}$ ze~zbioru~$P$ nazywamy zbiór punktów znajdujących się bliżej punktu $p_{i}$ niż jakiegokolwiek innego punktu ze~zbioru~$P$
+\begin{equation}
+Vor(p_{i}) := \{ x \in E | \forall q \in P, q \neq p_{i}, dist(x,p_{i}) < dist(x,q) \}
+\end{equation}
+
+W~zależności od kontekstu \emph{Diagramem Voronoi} nazywać będziemy zbiór komórek Voronoi utworzonych na~podstawie punktów ze zbioru~$P$, lub też graf o~wierzchołkach i~krawędziach utworzonych przez punkty będące w~równej odległości od dwóch lub więcej punktów ze~zbioru~$P$.
+
+\section{Właściwości}
+
+Rozważmy pojedyńczą komórkę diagramu. Niech $h(p,q)$ będzie otwartą półpłaszczyzną utworzoną przez prostą prostopadłą do~odcinka~$\overline{pq}$ dzielącą go na równe połowy, zawierającą punkt~p, nie zawierającą dzielącej prostej
+\begin{equation}
+h(p,q) := \{ x \in E | dist(x,p) \leq dist(x,q) \}
+\end{equation}
+
+Zauważmy, że komórkę możemy opisać jako przekrój $n-1$ półpłaszczyzn
+\begin{equation}
+Vor(p_{i}) := \bigcap_{1 \leq j \leq n, j \neq i} h(p_{i},p_{j})
+\end{equation}
+a więc jest wielokątnym, wypukłym oraz potencjalnie nieograniczonym obszarem płaszczyzny utworzonym przez conajwyżej $n-1$ wierzchołków i $n-1$ krawędzi. Krawędzie diagramu mogą być zarówno odcinkami, jak i półprostymi. O ile nie wszystkie punkty $p_{i} \in P$ są współliniowe, diagram nie zawiera krawędzi będących prostymi.
+
+Zdefiniujmy $Cp(q)$ jako \emph{największy, pusty okrąg o środku w punkcie $q \in E$} nie posiadający w swoim wnętrzu żadnego punktu ze zbioru $P$. Jeżeli $p \in Cp(q)$ to punkt $p$ lezy na tym okręgu.
+Obserwując, że wierzchołki diagramu znajdują się w równej odległości od trzech lub więcej punktów, możemy określić ich zbiór jako
+\begin{equation}
+P_{v} := \{ x \in E | \exists p,q,r \in P, p,q,r \in Cp(x) \}
+\end{equation}
+
+Punkty krawędzi diagramu znajdują się w równej odległości od dwóch centrów, lecz w większej odległości od jakichkolwiek innych punktów. Tak więc krawędź diagramu pomiędzy punktami $p,q \in P$ określamy jako
+\begin{equation}
+Ve(p,q) := \{ x \in E | \forall r \in P, p \neq r, q \neq r, p,q \in Cr(x), r \notin Cr(x) \}
+\end{equation}
+
+Komórki Voronoi o centrach $p,q \in P$ określamy jako \emph{przyległe}, jeżeli zbiór $Ve(p,q)$ jest niepusty.
+
+\section{Zastosowania}
+
+Ze względu na swoje właściwości Diagram Voronoi ma wiele różnorodnych zastosowań. Wykorzystywany jest on między innymi w
+\begin{itemize}
+\item
+Wieże obserwacyjne - aby~szybko wykrywać pożary lasów, rozstawiane są w~nich wieże obserwacyjne. Używając lokacji wież jako centrów budujemy diagram wyznaczający obszary obserwowane przez każdą wieże. Dzięki temu leśnicy są~w~stanie określić, które wieże posiadają zbyt dużo lub~zbyt mało odpowiedzialności oraz które części lasu wymagają lepszego pokrycia.
+\item
+Punkty usługowe - budując sieć punktów usługowych (np.~poczta, supermarkety, pizzerie) Diagram Voronoi pozwala określić obszar obsługiwany przez dany punkt. Dzięki temu można zdecydować, czy~uzasadnione jest~istnienie danego punktu usługowego lub~też~czy~dane miejsce zapewni wystarczająco dużo klientów w~okolicy aby~opłacało się~postawić tam~nowy sklep. Aby móc zastosować diagram w~jego podstawowej formie zdefiniowanej w~tym~rozdziale, potrzebne są~dodatkowe założenia, takie, jak~równy koszt usługi w~każdym punkcie, lub~też~koszt podróży liniowo proporcjonalny do~odległości od~punktu usługowego.
+\item
+Terytoria zwierząt - znając położenie legowisk osobników (lub~też~całych stad) danego gatunku możemy modelować ich terytoria, obszary łowne, itp.
+\item
+Ścieżki robotów - znając rozkład przeszkód na~danym terenie robot może wygenerować mapę bezpiecznych ścieżek utworzonych z~krawędzi diagramu, w~którym przeszkody są~centrami komórek.
+\item
+Epidemiologia - stosując Diagram Voronoi można modelować rozprzestrzenianie się~choroby w~danej populacji
+\item
+Sieci bezprzewodowe - na podstawie diagramu mozna stwierdzić jak duże jest obciążenie punktów dostępowych w sieci obejmującej dany teren
+\end{itemize}
+Diagram wykorzystywany jest także w górnictwie, klimatologii i innych dziedzinach.
+
+\section{Obliczanie Diagramu}
+
+Jak zauważyliśmy w~sekcji \emph{Właściwości}, komórka diagramu jest~przecięciem zbioru półpłaszczyzn. Obserwacja ta~pozwala utworzyć pojedyńczą komórkę w~czasie~$O(n \log{n})$, przy zastosowaniu algorytmu przecinania półpłaszczyzn opisanego w~\emph{Geometrii Obliczeniowej} w~rozdziale czwartym~\cite{geometria}. Złożoność obliczeniowa dla~całego diagramu wynosi~$O(n^2 \log{n})$.
+
+Optymalnym algorytmem obliczania diagramu Voronoi jest \emph{algorytm Fortune'a} obliczający wszystkie komórki w~czasie~$O(n \log{n})$. Stwierdzenie to opiera się na fakcie, że problem sortowania $n$ liczb rzeczywistych można sprowadzić do tworzenia diagramu Voronoi, a więc jego obliczenie zajmuje najwyżej $\Omega(n \log{n})$ czasu.
+
+\emph{Algorytm Fortune'a} buduje diagram poprzez skanowanie płaszczyzny poziomą prostą. Zbiera on~informacje o~przecięciu już~wygenerowanej struktury z~prostą skanującą. Informacja ta~zmienia się~tylko w~określonych momentach zwanych \emph{zdarzeniami punktowymi}.
+
+Podstawą dla~rozpoczęcia algorytmu jest~zbiór $P = \{p_{1},p_{2},...,p_{n}\}$ punktów na~płaszczyźnie~$E$. Płaszczyzna ta~skanowana jest prostą $l$ przesuwającą się z~góry na~dół. Największym problemem w~budowaniu komórek jest fakt, że~na~ich~kształt wpływają nieprzeskanowane jeszcze punkty poniżej prostej. Kiedy prosta dociera do~komórki $Vor(p_{i})$ nie~posiada ona jeszcze informacji o~punkcie~$p_{i}$. Dlatego też w~praktyce stosuje się~odrobine inne podejście. Zamiast badać przecięcie diagramu z~prostą skanującą~$l$, zbierane są~informacje o~tych punktach~$q \in E$ powyżej prostej, na~które nie~może już~mieć wpływu żaden punkt~$p_{i}$ znajdujący się~pod~nią.
+
+Otwartą półpłaszczyznę powyżej prostej~$l$, na~której znajdować będą się~wyrysowane już~komórki, określać będziemy symbolem $l^{+}$. Musimy zbadać, które~fragmenty diagramu powyżej~$l$ nie~zostaną już~zmienione przez centra poniżej. Odległość punktu~$q \in l^{+}$ od~każdego~$p_{i}$ poniżej~$l$ jest większa niż~jego odległość od~prostej~$l$. Dlatego też~najbliższe centrum dla~punktu~$q$ musi znajdować się~ponad~$l$ jeżeli odległość punktu od~jakiegokolwiek centrum powyżej~$l$ jest~mniejsza od~odległości od~prostej~$l$. Obszar punktów będących bliżej punktu~$p_{i}$ niż prostej~$l$ ograniczony jest parabolą $\beta_{i}$. Linia złożona z~parabolicznych łuków nazywana jest~\emph{plażą}. Można ją~wyrysować funkcją, która dla~każdego~$x$ wybiera najmniejszą wartość ze~wszystkich paraboli~$\beta_{i}$.
+
+Parabola~$\beta_{i}$ może zostać użyta do~utworzenia kilku rozłącznych fragmentów plaży. Punkty znajdujące się~na~przecięciach parabol wyrysowują krawędzie diagramu. Linia plaży istotnie zmienia się~w~przypadku wystąpienia jednego z~dwóch typów zdarzeń: pojawienie się~nowej paraboli oraz zredukowanie udziału paraboli do~pojedyńczego punktu.
+
+Pojawienie się~nowej paraboli~$\beta_{i}$ możliwe jest jedynie przez natrafienie prostej $l$ na punkt~$p_{i} \in P$. Pojawia się~wtedy zdegenerowana parabola o~zerowej szerokości połączona z~plażą. Wraz z~przesuwaniem się~prostej~$l$ parabola~$\beta_{i}$ rozszerza się. Miejsca jej~przecięcia z~poprzednią plażą rysują nową krawędź diagramu, która~nie~jest jeszcze połączona z~jego resztą. Fragment paraboli~$\beta_{i}$ znajdujący się~poniżej poprzedniej plaży staje się~jej nowym fragmentem tworząc nową plażę. Można z~tego wywnioskować, że~plaża może składać się~z~co~najwyżej~$2n-1$ parabolicznych fragmentów.
+
+Drugim typem zdarzenia wpływającym na~kształt plaży, a~przez to~diagramu, jest~zniknięcie fragmentu plaży. Niech~$\alpha'$ będzie zanikającym łukiem, a~$\alpha$ i~$\alpha''$ łukami sąsiadującymi z~$\alpha'$ przed jego zniknięciem. Łuki $\alpha$ i~$\alpha''$ nie mogą należeć do~tej~samej paraboli~$\beta_{i}$, tak więc łuki~$\alpha$, $\alpha'$ oraz~$\alpha''$ tworzone są poprzez trzy różne centra~$p_{i}$, $p_{j}$ oraz~$p_{k}$ należące do~zbioru~$P$. W~momencie, w~którym łuk~$\alpha'$ zanika, parabole~$\beta_{i}$, $\beta_{j}$ oraz~$\beta{k}$ przechodzą przez wspólny punkt~$q$. Punkt~$q$ znajduje się~wtedy w~równej odległości od~prostej~$l$ oraz od~wszystkich trzech punktów, a~więc istnieje okrąg o~środku w~punkcie~$q$, zawierający punkty~$p_{i}$, $p_{j}$ i~$p_{k}$ na swojej krawędzi, oraz nie~zawierający żadnego innego punktu z~$P$ w~swoim wnętrzu. Punkt $q$ jest więc wierzchołkiem diagramu, a~zaniknięcie fragmentu plaży~$\alpha'$ oznacza spotkanie się~dwóch krawędzi diagramu (spotkanie większej ilości krawędzi można sprowadzić do~kilku zdarzeń spotkania dwóch krawędzi).
+
+Kolejnym istotnym elementem algorytmu jest~określenie odpowiednich struktur danych do~przechowywania informacji o~już utworzonych częściach diagramu, kolejce zdarzeń, oraz o~bierzącym stanie prostej (a~w~zasadzie plaży). Proponowane dla nich jest użycie następujących implementacji:
+\begin{itemize}
+\item
+Gotowe elementy diagramu przechowujemy w~strukturze danych opisanej w~\emph{Geometrii Obliczeniowej} w~rozdziale drugim\cite{geometria}. Składa się~ona z~listy wierzchołków wraz z~ich~współrzędnymi, listy komórek ze~wskazaniem na~początki łańcuchów krawędzi zewnętrznych i~wewnętrznych, oraz listę krawędzi, opisanych poprzez punkt początkowy, kolejną i~poprzednią krawędź, bliźniaczą krawędź oraz komórkę. Struktury te będziemy zbiorczo oznaczać jako $\mathcal{D}$. Aby po zakończeniu obliczeń dane były spójne, potrzebne jest jeszcze ograniczenie przestrzeni, na której generowany jest diagram.
+\item
+Do~reprezentowania plaży używane jest~wyważone drzewo binarne $\tau$. Jego liście przechowywują informacje łukach należących do~$x$-monotonicznej linii plaży, ułożonych w~kolejności od~lewej. Wewnętrzne węzły drzewa reprezentują punkty załamania plaży. Punkty te~przechowywane są~jako pary punktów~$\langle p_{i}, p_{j}\rangle$, gdzie~$p_{i}$ definiuje lewą parabolę, a~$p_{j}$ prawą parabolę. Dzięki takiej reprezentacji możemy znaleźć łuk znajdujący się~nad nowym punktem w~czasie~$O(\log{n})$ poprzez porównywanie współrzędnej~$x$ węzłów pośrednich i~prostej~$l$ w~ustalonym punkcie czasu.
+Każdy liść drzewa $\tau$ przechowuje także wskaźnik do~zdarzenia w~kolejce oznaczającego zanik odpowiedniego łuku $\alpha$. Wskaźnik ten jest pusty, jeżeli łuk nie zniknie, lub wydarzenie nie zostało jeszcze wykryte. Każdy z~węzłów pośrednich posiada wskaźnik na~krawędź z~listy opisanej powyżej, która rysowana jest przez to~przecięcie parabol.
+\item
+Kolejka zdarzeń $Q$ priorytetyzuje je~ze~względu na~współrzędną~$y$ jego wystąpienia. Przechowywane są~jedynie przyszłe zdarzenia, które są~już~znane. Dla pojawiania się ~owych łuków, przechowywane są~ich~punkty~$p_{i}$. Dla~znikających łuków przechowywany jest~najniższy punkt z~okręgu ze~wskaźnikiem do~liścia z~$\tau$, który go~reprezentuje.
+\end{itemize}
+
+Jak łatwo zauważyć, wszystkie zdarzenia dodawania nowych łuków są~z~góry znane, gdyż są~one powiązane z~punktami~$p_{i} \in P$. Zdarzenia zaniku łuków muszą zostać wykryte.
+
+Podczas skanowania linia plaży zmienia swoją topologiczną strukturę przy każdym zdarzeniu z~kolejki. Może to powodować pojawienie się~na~niej nowej trójki łuków, lub zniknięcie już istniejącej. Algorytm zapewnia, że~dla~każdej trójki łuków mogącej spowodować zanik środkowego z~nich, dodane zostanie odpowiednie zdarzenie do~kolejki~$Q$. W~trakcie wykrywania należy uwzględnić dwa szczególne przypadki: dwa punkty definiowane przez trzy łuki nigdy się~nie~spotkają, oraz zniknięcie całej trójki zanim nastąpi odpowiednie zdarzenie poprzez pojawienie się~pod~nią~nowego łuku.
+
+W~trakcie wykonania algorytmu, po~każdym zdarzeniu z~kolejki~$Q$ sprawdzane są~możliwości wystąpienia nowych i~dodawane do~kolejki. Sprawdzane jest także, czy~dla znikającej trójki nie~zostało dodane zdarzenie do~kolejki, po~czym jest~ono usuwane.
+
+Bazując na~powyższych ustaleniach można spisać gotowy algorytm. Warto zauważyć, że~po wykonaniu ostatniego zdarzenia plaża jeszcze nie~zanika. Dlatego też pozostałe krawędzie muszą zostać połączone z~prostokątem ograniczającym przestrzeń.
+
+\begin{algorithm}[VoronoiDiagram]
+\caption{$VoronoiDiagram(P)$}
+\label{fortune}  % and a label for \ref{} commands later in the document
+\begin{algorithmic}
+    \REQUIRE $P := \{p_{1}, p_{2}, ... , p_{n}\}$
+    \STATE $y \Leftarrow 1$
+    \IF{$n < 0$}
+        \STATE $X \Leftarrow 1 / x$
+        \STATE $N \Leftarrow -n$
+    \ELSE
+        \STATE $X \Leftarrow x$
+        \STATE $N \Leftarrow n$
+    \ENDIF
+    \WHILE{$N \neq 0$}
+        \IF{$N$ is even}
+            \STATE $X \Leftarrow X \times X$
+            \STATE $N \Leftarrow N / 2$
+        \ELSE[$N$ is odd]
+            \STATE $y \Leftarrow y \times X$
+            \STATE $N \Leftarrow N - 1$
+        \ENDIF
+    \ENDWHILE
+\end{algorithmic}
+\end{algorithm}
 
 \chapter{Triangulacja Delaunay}
 
@@ -106,15 +247,5 @@ Dystrybucja punktów.
 %\include bib.tex
 \bibliography{division}
 
-%
-% Spis tabel (jeżeli jest potrzebny):
-%\listoftables
-%
-% Spis rysunków (jeżeli jest potrzebny):
-\listoffigures
-
-%
-% Skorowidz (opcjonalnie)
-% \printindex
 
 \end{document}
