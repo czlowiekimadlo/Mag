@@ -1,4 +1,4 @@
-% *** Uwaga *** Tekst w tym pliku nie ma specjalnie sensu i służy za twz. wypełniacz ***
+
 \documentclass[skorowidz,autorrok,backref,xodstep,oswiadczenie]{wmimgr}
 
 \usepackage{listings}
@@ -23,7 +23,7 @@
 \email    {s367791@wmi.amu.edu.pl}
 
 % Tytuł pracy:
-\title    {Hierarchiczny model podziału obiektów}
+\title    {Hierarchiczny Model Podziału Obiektów}
 
 % Kierunek, tj. katedra/instytut promotora:
 \kierunek {Informatyka}
@@ -216,7 +216,7 @@ Bazując na~powyższych ustaleniach można spisać gotowy algorytm. Warto zauwa�
 
 \begin{algorithm}
 \caption{$HandleCircleEvent(\gamma)$ \cite{geometria}}
-\label{HandleSiteEvent}
+\label{HandleCircleEvent}
 \begin{algorithmic}
     \REQUIRE $P := \{p_{1}, p_{2}, ... , p_{n}\}, \mathcal{Q, T, D}$
     \STATE Delete leaf $\gamma$ representing arc $\alpha$ from $\mathcal{T}$
@@ -275,15 +275,57 @@ Bazując na~powyższych ustaleniach można spisać gotowy algorytm. Warto zauwa�
 
 \chapter{Triangulacja Delaunay}
 
-Triangulacje.
+W~tym~rozdziale przyjżymy się~bliżej \emph{Triangulacji Delaunay}. Sprawdzimy czym charakteryzuje się~ten~rodzaj triangulacji oraz dowiemy się, jaki jest~jego związek z~\emph{Diagramem Voronoi}. Następnie omówimy sposób jej~tworzenia.
 
-\section{Definicja}
+\section{Definicja i Właściwości}
 
-\section{Właściwości}
+Zanim przejdziemy do określania specyficznych właściwości \emph{Triangulacji Delaunay} wpierw zdefiniujemy czym~jest~\emph{triangulacja}.
+
+\emph{Triangulacją} nazywać będziemy podział $n$-wymiarowej przestrzeni na~\emph{sympleksy}~(trójkąty, czworościany). W~szczególności, dla~płaszczyzny będą to~trójkąty, stąd nazwa \emph{triangulacja}. Wszystkie trójkąty muszą łączyć~się w~całość poprzez wspólne krawędzie, lub~wspólne wierzchołki.
+
+Niech $P:=\{ p_{1},p_{2},...,p_{n} \}$ będzie zbiorem punktów na~płaszczyźnie euklidesowej $E$. Przez \emph{maksymalny podział płaszczyzny}~$\mathcal{S}$ rozumieć będziemy taki graf o~wierzchołkach w~$P$, do~którego nie~można dodać żadnej nowej krawędzi bez~tworzenia grafu nieplanarnego. Tak~więc~$\mathcal{S}$ jest \emph{triangulacją} zbioru~$P$ na~płaszczyźnie~$E$. Podstawą dla~tego stwierdzenia jest fakt, iż~każdy wielokąt na~płaszczyźnie możemy podzielić na~trójkąty\cite{geometria}, tak więc dla~każdego pustego wielokąta w~$\mathcal{S}$ możemy dodać do~niego nowe krawędzie.
+
+Zewnętrzne krawędzie \emph{triangulacji} zbioru punktów~$P$ zawsze tworzą jego otoczkę wypukłą. Wszystkie możliwe triangulacje zbioru~$P$ mają tę~samą ilość trójkątów i~krawędzi i~wynoszą one odpowiednio $2n-2-k$ i~$3n-3-k$, gdzie~$k$ to~ilość punktów leżących na~otoczce wypukłej.
+
+Niech~$\mathcal{T}$ będzie triangulacją~$P$ posiadającą~$m$ trójkątów. Przez~$A(\mathcal{T}) := (\alpha_{1}, \alpha_{2}, ..., \alpha_{3m})$ oznaczać będziemy posortowany rosnąco \emph{wektor~kątów} triangulacji~$\mathcal{T}$.
+
+Mówimy, że~wektor kątów~$A(\mathcal{T'})$ jest leksykograficznie większy od~wektora kątów~$A(\mathcal{T})$, jeżeli istnieje indeks~$1 \leq i \leq 3m$ taki, że~dla~$j < i, \alpha_{j} = \alpha_{j}'$ oraz~$\alpha_{i} < \alpha_{i}'$.
+
+Triangulację~$\mathcal{T}$ nazywamy \emph{kątowo optymalną}, jeżeli zachodzi~$A(\mathcal{T}) \geq A(\mathcal{T'})$ dla wszystkich możliwych triangulacji~$\mathcal{T'}$ zbioru~$P$. Optymalna kątowo triangulacja jest \emph{Triangulacją Delaunay}. Dodatkowo, jeżeli w~zbiorze~$P$ nie ma~czwórki punktów tworzących przyległe trójkąty i~leżących na~okręgu, to~triangulacja ta jest unikalna.
+
+Dla pary trójkątów~$p_{i}, p_{j}, p_{l}$ oraz~$p_{i}, p_{k}, p_{j}$ z~$\mathcal{T}$ współdzielących krawędź~$\overline{p_{i} p_{j}}$, możemy usunąć tę~krawędź i~zastąpić ją~krawędzią~$\overline{p_{k} p_{l}}$, w~wyniku czego otrzymamy triangulację~$\mathcal{T'}$. Jeżeli lokalnie dla~tej pary trójkątów minimalny kąt został zwiększony, to~nowa triangulacja~$\mathcal{T'}$ jest bardziej optymalna od~poprzedniej. Procedurę tą~nazywamy \emph{edge flip}.
+
+Aby stwierdzić, czy dana krawędź~$\overline{p_{i} p_{j}}$ współdzielona przez trójkąty $p_{i}, p_{j}, p_{l}$ oraz $p_{i}, p_{k}, p_{j}$ z~$\mathcal{T}$ jest nieoptymalna, można to~łatwo sprawdzić poprzez narysowanie okręgu opisanego na~jednym z~tych trójkątów. Jeżeli wierzchołek drugiego trójkąta, nie~należący do~współdzielonej krawędzi, mieści się~wewnątrz tego okręgu, to~krawędź jest nieoptymalna. Jeżeli wszystkie cztery wierzchołki znajdują się na~narysowanym okręgu, to~obydwie możliwe triangulacje są~sobie równoważne.
+
+Stosując powyższą metodę, możemy z~dowolnej triangulacji~$\mathcal{T}$ uzyskać optymalną triangulację~$\mathcal{T'}$ (nazywaną także \emph{triangulacją poprawną}) stosując poniższą procedurę.
+
+\begin{algorithm}
+\caption{$LegalTriangulation(\mathcal{T})$ \cite{geometria}}
+\label{LegalTriangulation}
+\begin{algorithmic}
+    \WHILE{$\mathcal{T}$ contains illegal edge $\overline{p_{i} p_{j}}$}
+        \STATE Let $p_{i}, p_{j}, p_{l}$ and $p_{i}, p_{k}, p_{j}$ be the two triangles adjacent to $\overline{p_{i} p_{j}}$
+        \STATE Remove $\overline{p_{i} p_{j}}$ from $\mathcal{T}$, add $\overline{p_{k} p_{l}}$
+    \ENDWHILE
+    \RETURN $\mathcal{T}$
+\end{algorithmic}
+\end{algorithm}
 
 \section{Dualizm Triangulacji Delaunay i Diagramu Voronoi}
 
+W~poprzednim rozdziale opisywaliśmy Diagram Voronoi. Podobnie jak~Triangulacja Delaunay, tworzony jest on~na podstawie zbioru punktów~$P:=\{ p_{1},p_{2},...,p_{n} \}$. Posiadając wygenerowany diagram~$Vor(P)$, tworzymy graf~$\mathcal{G}$ o~wierzchołkach w~$P$. Dla każdej krawędzi w~$Vor(P)$ rozdzielającej punkty $p_{i}, p_{j}$ dodajemy nową krawędź do~grafu~$\mathcal{G}$. Jeżeli narysujemy wszystkie krawędzie grafu~$\mathcal{G}$ jako linie proste, otrzymamy triangulację zbioru punktów~$P$. Graf ten~jest grafem dualnym dla~grafu~$Vor(P)$ -~komórki grafu~$Vor(P)$ są~wierzchołkami grafu~$\mathcal{G}$, natomiast trójkąty~$\mathcal{G}$ są~wierzchołkami w~$Vor(P)$.
+
 \section{Obliczanie Triangulacji}
+
+Poznaliśmy już jedną metodę tworzenia Triangulacji Delaunay -~stosowanie procedury \emph{flip edge} do~momentu, w~którym nie~można zoptymalizować już~żadnej z~krawędzi. Posiada ona jednak pewne wady. Przede wszystkim operuje ona na~już~istniejącej triangulacji, więc wejście w~postaci zbioru punktów na~płaszczyźnie nie~jest~wystarczające. Dodatkowo, metoda ta~nie~jest najoptymalniejsza, gdyż jej złożoność obliczeniowa wynosi~$O(n^2)$.
+
+Wiemy także, że~triangulację tą~możemy uzyskać poprzez dualizm Diagramu Voronoi, który także potrafimy wygenerować. Teraz rozpatrzymy algorytm generowania triangulacji wprost z użyciem losowej procedury inkrementacyjnej.
+
+Tak jak~poprzednio, triangulację generować będziemy dla zbioru punktów~$P:=\{ p_{1},p_{2},...,p_{n} \}$. Aby uniknąć problemów z~nieograniczonymi trójkątami na~brzegach triangulacji, dodajemy do~niej zewnętrzny trójkąt $p_{-1}, p_{-2}, p_{-3}$, zawierający w~swoim wnętrzu wszystkie punkty z~$P$, jednak jego wierzchołki nie~mogą leżeć wewnątrz żadnego opisanego na~dowolnej trójce punktów z~$P$. Będziemy nazywać go \emph{supertrójkątem}. Oznacza~to, że~obliczamy triangulację nie~tylko zbioru $P$, ale $P \cup \{p_{-1}, p_{-2}, p_{-3}\}$.
+
+Jak już~powiedzieliśmy, algorytm jest losowy i~inkrementacyjny. Oznacza~to, że~w~każdym kroku do~triangulacji dodawany jest jeden, losowo dobrany, jeszcze nie~użyty punkt~$p_{r}$ ze~zbioru~$P$. Najpierw ustalamy, w~którym trójkącie dodany zostanie nowy punkt. Metoda ustalania opisana zostanie za~chwilę. Następnie dodajemy nowe krawędzie łączące nowo dodany punkt z~wierzchołkami trójkąta, we~wnętrzu którego się~znajduje. Jeżeli punkt~$p_{r}$ wypadnie na~już istniejącej krawędzi, krawędź~ta jest najpierw usuwana, a~następnie punkt łączony jest nowymi krawędziami ze~wszystkimi wierzchołkami powstałego czworoboku.
+
+Ponieważ po~wykonaniu powyższych operacji uzyskana triangulacja może nie~być optymalna, w~każdym kroku bierzący zbiór punktów optymalizowany jest pod kątem maksymalizacji minimalnych kątów metodą \emph{flip edge} poprzez zastosowanie procedury $LegalizeEdge$ na~wszystkich potencjalnie nieoptymalnych krawędziach.
 
 \chapter{Przejście z Przestrzeni 2D do 3D}
 
