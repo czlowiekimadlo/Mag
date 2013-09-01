@@ -195,34 +195,95 @@ W~trakcie wykonania algorytmu, po~każdym zdarzeniu z~kolejki~$Q$ sprawdzane są
 
 Bazując na~powyższych ustaleniach można spisać gotowy algorytm. Warto zauważyć, że~po wykonaniu ostatniego zdarzenia plaża jeszcze nie~zanika. Dlatego też pozostałe krawędzie muszą zostać połączone z~prostokątem ograniczającym przestrzeń.
 
-\begin{algorithm}[VoronoiDiagram]
-\caption{$VoronoiDiagram(P)$}
+\begin{algorithm}
+\caption{$VoronoiDiagram(P)$ \cite{geometria}}
 \label{fortune}  % and a label for \ref{} commands later in the document
 \begin{algorithmic}
     \REQUIRE $P := \{p_{1}, p_{2}, ... , p_{n}\}$
-    \STATE $y \Leftarrow 1$
-    \IF{$n < 0$}
-        \STATE $X \Leftarrow 1 / x$
-        \STATE $N \Leftarrow -n$
-    \ELSE
-        \STATE $X \Leftarrow x$
-        \STATE $N \Leftarrow n$
-    \ENDIF
-    \WHILE{$N \neq 0$}
-        \IF{$N$ is even}
-            \STATE $X \Leftarrow X \times X$
-            \STATE $N \Leftarrow N / 2$
-        \ELSE[$N$ is odd]
-            \STATE $y \Leftarrow y \times X$
-            \STATE $N \Leftarrow N - 1$
+    \STATE Init $\mathcal{Q, T, D}$
+    \WHILE{$\mathcal{Q}$ is not empty}
+        \STATE Get event $q$ from $\mathcal{Q}$ with largest $y$-coordinate
+        \IF{$q$ is site event for $p_{i}$}
+            \STATE $HandleSiteEvent(p_{i})$
+        \ELSE
+            \STATE Get leaf $\gamma$ from tree $\mathcal{T}$ representing dissapearing arc
+            \STATE $HandleCircleEvent(\gamma)$
         \ENDIF
     \ENDWHILE
+    \RETURN $\mathcal{D}$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{$HandleCircleEvent(\gamma)$ \cite{geometria}}
+\label{HandleSiteEvent}
+\begin{algorithmic}
+    \REQUIRE $P := \{p_{1}, p_{2}, ... , p_{n}\}, \mathcal{Q, T, D}$
+    \STATE Delete leaf $\gamma$ representing arc $\alpha$ from $\mathcal{T}$
+    \STATE Update internal nodes of $\mathcal{T}$
+    \STATE Rebalance tree $\mathcal{T}$
+    \IF{$\gamma$ predeccessor and successor points to circle events $q, l$}
+        \STATE Remove events $q, l$ from $\mathcal{Q}$
+    \ENDIF
+    \STATE Add half-edge with centre of circle event $c$ to list $\mathcal{D}$
+    \STATE Add two half-edge records for new breakpoint in $\mathcal{D}$
+    \STATE Set pointers between new half-edges
+    \STATE Link new records with those in $\mathcal{D}$ ending in vertex $c$
+    \IF{three arcs with left neighbour of $\alpha$ as middle cause it to disappear}
+        \STATE Add circle event $q$ into queue $\mathcal{Q}$
+        \STATE Link event $q$ with disappearing arc leaf in $\mathcal{T}$
+    \ENDIF
+    \IF{three arcs with right neighbour of $\alpha$ as middle cause it to disappear}
+        \STATE Add circle event $q$ into queue $\mathcal{Q}$
+        \STATE Link event $q$ with disappearing arc leaf in $\mathcal{T}$
+    \ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{$HandleSiteEvent(p_{i})$ \cite{geometria}}
+\label{HandleSiteEvent}
+\begin{algorithmic}
+    \REQUIRE $P := \{p_{1}, p_{2}, ... , p_{n}\}, \mathcal{Q, T, D}$
+    \IF{$\mathcal{T}$ is empty}
+        \STATE Insert site event $p_{i}$ into $\mathcal{T}$
+    \ELSE
+        \STATE Find arc $\alpha$ vertically above $p_{i}$
+        \IF{$\mathcal{T}$ leaf representing $\alpha$ points to circle event $q$}
+            \STATE Remove $q$ from $\mathcal{Q}$
+        \ENDIF
+        \STATE Replace leaf in $\mathcal{T}$ representing $\alpha$ with subtree having leafs for $\alpha', \alpha'', \alpha'''$
+        \STATE Store site $p_{i}$ in $\alpha''$ leaf
+        \STATE Get site $p_{j}$ from $\alpha$ leaf
+        \STATE Store site $p_{j}$ in $\alpha', \alpha''$ leafs
+        \STATE Store tuples $\langle p_{j}, p_{i}\rangle$, $\langle p_{i}, p_{j}\rangle$ in new internal nodes
+        \IF{$\mathcal{T}$ is not balanced}
+            \STATE Rebalance tree $\mathcal{T}$
+        \ENDIF
+        \STATE Add edge to $\mathcal{D}$ separating $\mathcal{V}(p_{i}), \mathcal{V}(p_{j})$ with newly created breakpoints $\langle p_{j}, p_{i}\rangle$, $\langle p_{i}, p_{j}\rangle$
+        \IF{arc triplet with $p_{i}$ as left arc causes middle arc to dissapear}
+            \STATE Add circle event $q$ into queue $\mathcal{Q}$
+            \STATE Link event $q$ with disappearing arc leaf in $\mathcal{T}$
+        \ENDIF
+        \IF{arc triplet with $p_{i}$ as right arc causes middle arc to dissapear}
+            \STATE Add circle event $q$ into queue $\mathcal{Q}$
+            \STATE Link event $q$ with disappearing arc leaf in $\mathcal{T}$
+        \ENDIF
+    \ENDIF
 \end{algorithmic}
 \end{algorithm}
 
 \chapter{Triangulacja Delaunay}
 
 Triangulacje.
+
+\section{Definicja}
+
+\section{Właściwości}
+
+\section{Dualizm Triangulacji Delaunay i Diagramu Voronoi}
+
+\section{Obliczanie Triangulacji}
 
 \chapter{Przejście z Przestrzeni 2D do 3D}
 
