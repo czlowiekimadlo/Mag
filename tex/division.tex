@@ -10,6 +10,7 @@
 \usepackage{mathtools}
 \usepackage{algorithmic}
 \usepackage[chapter]{algorithm}
+\usepackage{graphicx}
 
 \newcommand\dbr{\discretionary{}{}{}}
 
@@ -122,6 +123,13 @@ Niech $P:=\{ p_{1},p_{2},...,p_{n} \}$ będzie zbiorem punktów na~płaszczyźni
 Vor(p_{i}) := \{ x \in E | \forall q \in P, q \neq p_{i}, dist(x,p_{i}) < dist(x,q) \}
 \end{equation}
 
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=70mm]{images/voronoi1.png}
+\caption{Przykładowy diagram Voronoi}
+\label{voronoidiagram}
+\end{figure}
+
 W~zależności od kontekstu \emph{Diagramem Voronoi} nazywać będziemy zbiór komórek Voronoi utworzonych na~podstawie punktów ze zbioru~$P$, lub też graf o~wierzchołkach i~krawędziach utworzonych przez punkty będące w~równej odległości od dwóch lub więcej punktów ze~zbioru~$P$.
 
 \section{Właściwości}
@@ -147,6 +155,13 @@ Punkty krawędzi diagramu znajdują się w równej odległości od dwóch centr�
 \begin{equation}
 Ve(p,q) := \{ x \in E | \forall r \in P, p \neq r, q \neq r, p,q \in Cr(x), r \notin Cr(x) \}
 \end{equation}
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=70mm]{images/voronoi2.png}
+\caption{Punkty krawędzi oraz wierzchołki}
+\label{voronoicircles}
+\end{figure}
 
 Komórki Voronoi o centrach $p,q \in P$ określamy jako \emph{przyległe}, jeżeli zbiór $Ve(p,q)$ jest niepusty.
 
@@ -181,6 +196,13 @@ Optymalnym algorytmem obliczania diagramu Voronoi jest \emph{algorytm Fortune'a}
 
 Podstawą dla~rozpoczęcia algorytmu jest~zbiór $P = \{p_{1},p_{2},...,p_{n}\}$ punktów na~płaszczyźnie~$E$. Płaszczyzna ta~skanowana jest prostą $l$ przesuwającą się z~góry na~dół. Największym problemem w~budowaniu komórek jest fakt, że~na~ich~kształt wpływają nieprzeskanowane jeszcze punkty poniżej prostej. Kiedy prosta dociera do~komórki $Vor(p_{i})$ nie~posiada ona jeszcze informacji o~punkcie~$p_{i}$. Dlatego też w~praktyce stosuje się~odrobine inne podejście. Zamiast badać przecięcie diagramu z~prostą skanującą~$l$, zbierane są~informacje o~tych punktach~$q \in E$ powyżej prostej, na~które nie~może już~mieć wpływu żaden punkt~$p_{i}$ znajdujący się~pod~nią.
 
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=60mm]{images/voronoi3.png}
+\caption{Przykład plaży}
+\label{voronoibeach}
+\end{figure}
+
 Otwartą półpłaszczyznę powyżej prostej~$l$, na~której znajdować będą się~wyrysowane już~komórki, określać będziemy symbolem $l^{+}$. Musimy zbadać, które~fragmenty diagramu powyżej~$l$ nie~zostaną już~zmienione przez centra poniżej. Odległość punktu~$q \in l^{+}$ od~każdego~$p_{i}$ poniżej~$l$ jest większa niż~jego odległość od~prostej~$l$. Dlatego też~najbliższe centrum dla~punktu~$q$ musi znajdować się~ponad~$l$ jeżeli odległość punktu od~jakiegokolwiek centrum powyżej~$l$ jest~mniejsza od~odległości od~prostej~$l$. Obszar punktów będących bliżej punktu~$p_{i}$ niż prostej~$l$ ograniczony jest parabolą $\beta_{i}$. Linia złożona z~parabolicznych łuków nazywana jest~\emph{plażą}. Można ją~wyrysować funkcją, która dla~każdego~$x$ wybiera najmniejszą wartość ze~wszystkich paraboli~$\beta_{i}$.
 
 Parabola~$\beta_{i}$ może zostać użyta do~utworzenia kilku rozłącznych fragmentów plaży. Punkty znajdujące się~na~przecięciach parabol wyrysowują krawędzie diagramu. Linia plaży istotnie zmienia się~w~przypadku wystąpienia jednego z~dwóch typów zdarzeń: pojawienie się~nowej paraboli oraz zredukowanie udziału paraboli do~pojedyńczego punktu.
@@ -189,7 +211,21 @@ Parabola~$\beta_{i}$ może zostać użyta do~utworzenia kilku rozłącznych frag
 
 Pojawienie się~nowej paraboli~$\beta_{i}$ możliwe jest jedynie przez natrafienie prostej $l$ na punkt~$p_{i} \in P$. Pojawia się~wtedy zdegenerowana parabola o~zerowej szerokości połączona z~plażą. Wraz z~przesuwaniem się~prostej~$l$ parabola~$\beta_{i}$ rozszerza się. Miejsca jej~przecięcia z~poprzednią plażą rysują nową krawędź diagramu, która~nie~jest jeszcze połączona z~jego resztą. Fragment paraboli~$\beta_{i}$ znajdujący się~poniżej poprzedniej plaży staje się~jej nowym fragmentem tworząc nową plażę. Można z~tego wywnioskować, że~plaża może składać się~z~co~najwyżej~$2n-1$ parabolicznych fragmentów.
 
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=150mm]{images/voronoi4.png}
+\caption{Pojawienie się nowej paraboli}
+\label{voronoinewarc}
+\end{figure}
+
 Drugim typem zdarzenia wpływającym na~kształt plaży, a~przez to~diagramu, jest~zniknięcie fragmentu plaży. Niech~$\alpha'$ będzie zanikającym łukiem, a~$\alpha$ i~$\alpha''$ łukami sąsiadującymi z~$\alpha'$ przed jego zniknięciem. Łuki $\alpha$ i~$\alpha''$ nie mogą należeć do~tej~samej paraboli~$\beta_{i}$, tak więc łuki~$\alpha$, $\alpha'$ oraz~$\alpha''$ tworzone są poprzez trzy różne centra~$p_{i}$, $p_{j}$ oraz~$p_{k}$ należące do~zbioru~$P$. W~momencie, w~którym łuk~$\alpha'$ zanika, parabole~$\beta_{i}$, $\beta_{j}$ oraz~$\beta{k}$ przechodzą przez wspólny punkt~$q$. Punkt~$q$ znajduje się~wtedy w~równej odległości od~prostej~$l$ oraz od~wszystkich trzech punktów, a~więc istnieje okrąg o~środku w~punkcie~$q$, zawierający punkty~$p_{i}$, $p_{j}$ i~$p_{k}$ na swojej krawędzi, oraz nie~zawierający żadnego innego punktu z~$P$ w~swoim wnętrzu. Punkt $q$ jest więc wierzchołkiem diagramu, a~zaniknięcie fragmentu plaży~$\alpha'$ oznacza spotkanie się~dwóch krawędzi diagramu (spotkanie większej ilości krawędzi można sprowadzić do~kilku zdarzeń spotkania dwóch krawędzi).
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=150mm]{images/voronoi6.png}
+\caption{Zanik paraboli}
+\label{voronoidelarc}
+\end{figure}
 
 \subsection{Struktury Danych}
 
@@ -304,6 +340,13 @@ Zanim przejdziemy do określania specyficznych właściwości \emph{Triangulacji
 
 \subsection{Ogólne Pojęcie Triangulacji}
 
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=70mm]{images/triangulacja1.png}
+\caption{Przykładowa triangulacja}
+\label{triangulationexample}
+\end{figure}
+
 \emph{Triangulacją} nazywać będziemy podział $n$-wymiarowej przestrzeni na~\emph{sympleksy}~(trójkąty, czworościany). W~szczególności, dla~płaszczyzny będą to~trójkąty, stąd nazwa \emph{triangulacja}. Wszystkie trójkąty muszą łączyć~się w~całość poprzez wspólne krawędzie, lub~wspólne wierzchołki.
 
 Niech $P:=\{ p_{1},p_{2},...,p_{n} \}$ będzie zbiorem punktów na~płaszczyźnie euklidesowej $E$. Przez \emph{maksymalny podział płaszczyzny}~$\mathcal{S}$ rozumieć będziemy taki graf o~wierzchołkach w~$P$, do~którego nie~można dodać żadnej nowej krawędzi bez~tworzenia grafu nieplanarnego. Tak~więc~$\mathcal{S}$ jest \emph{triangulacją} zbioru~$P$ na~płaszczyźnie~$E$. Podstawą dla~tego stwierdzenia jest fakt, iż~każdy wielokąt na~płaszczyźnie możemy podzielić na~trójkąty\cite{geometria}, tak więc dla~każdego pustego wielokąta w~$\mathcal{S}$ możemy dodać do~niego nowe krawędzie.
@@ -321,6 +364,20 @@ Triangulację~$\mathcal{T}$ nazywamy \emph{kątowo optymalną}, jeżeli zachodzi
 \subsection{Optymalizacja Kątów i Flip Edge}
 
 Dla pary trójkątów~$p_{i}, p_{j}, p_{l}$ oraz~$p_{i}, p_{k}, p_{j}$ z~$\mathcal{T}$ współdzielących krawędź~$\overline{p_{i} p_{j}}$, możemy usunąć tę~krawędź i~zastąpić ją~krawędzią~$\overline{p_{k} p_{l}}$, w~wyniku czego otrzymamy triangulację~$\mathcal{T'}$. Jeżeli lokalnie dla~tej pary trójkątów minimalny kąt został zwiększony, to~nowa triangulacja~$\mathcal{T'}$ jest bardziej optymalna od~poprzedniej. Procedurę tą~nazywamy \emph{edge flip}.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=150mm]{images/triangulacja2.png}
+\caption{Zastosowanie operacji \emph{edge flip}}
+\label{edgeflip}
+\end{figure}
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=70mm]{images/triangulacja3.png}
+\caption{Okrąg opisany na trójkącie wykazujący nieoptymalną krawędź}
+\label{edgetest}
+\end{figure}
 
 Aby stwierdzić, czy dana krawędź~$\overline{p_{i} p_{j}}$ współdzielona przez trójkąty $p_{i}, p_{j}, p_{l}$ oraz $p_{i}, p_{k}, p_{j}$ z~$\mathcal{T}$ jest nieoptymalna, można to~łatwo sprawdzić poprzez narysowanie okręgu opisanego na~jednym z~tych trójkątów. Jeżeli wierzchołek drugiego trójkąta, nie~należący do~współdzielonej krawędzi, mieści się~wewnątrz tego okręgu, to~krawędź jest nieoptymalna. Jeżeli wszystkie cztery wierzchołki znajdują się na~narysowanym okręgu, to~obydwie możliwe triangulacje są~sobie równoważne.
 
@@ -342,6 +399,14 @@ Stosując powyższą metodę, możemy z~dowolnej triangulacji~$\mathcal{T}$ uzys
 
 W~poprzednim rozdziale opisywaliśmy Diagram Voronoi. Podobnie jak~Triangulacja Delaunay, tworzony jest on~na podstawie zbioru punktów~$P:=\{ p_{1},p_{2},...,p_{n} \}$. Posiadając wygenerowany diagram~$Vor(P)$, tworzymy graf~$\mathcal{G}$ o~wierzchołkach w~$P$. Dla każdej krawędzi w~$Vor(P)$ rozdzielającej punkty $p_{i}, p_{j}$ dodajemy nową krawędź do~grafu~$\mathcal{G}$. Jeżeli narysujemy wszystkie krawędzie grafu~$\mathcal{G}$ jako linie proste, otrzymamy triangulację zbioru punktów~$P$. Graf ten~jest grafem dualnym dla~grafu~$Vor(P)$ -~komórki grafu~$Vor(P)$ są~wierzchołkami grafu~$\mathcal{G}$, natomiast trójkąty~$\mathcal{G}$ są~wierzchołkami w~$Vor(P)$.
 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=100mm]{images/dualizm.png}
+\caption{Triangulacja Delaunay i odpowiadający jej Diagram Voronoi}
+\label{duality}
+\end{figure}
+
 \section{Obliczanie Triangulacji}
 
 Poznaliśmy już jedną metodę tworzenia Triangulacji Delaunay -~stosowanie procedury \emph{flip edge} do~momentu, w~którym nie~można zoptymalizować już~żadnej z~krawędzi. Posiada ona jednak pewne wady. Przede wszystkim operuje ona na~już~istniejącej triangulacji, więc wejście w~postaci zbioru punktów na~płaszczyźnie nie~jest~wystarczające. Dodatkowo, metoda ta~nie~jest najoptymalniejsza, gdyż jej złożoność obliczeniowa wynosi~$O(n^2)$.
@@ -352,7 +417,22 @@ Wiemy także, że~triangulację tą~możemy uzyskać poprzez dualizm Diagramu Vo
 
 Tak jak~poprzednio, triangulację generować będziemy dla zbioru punktów~$P:=\{ p_{1},p_{2},...,p_{n} \}$. Aby uniknąć problemów z~nieograniczonymi trójkątami na~brzegach triangulacji, dodajemy do~niej zewnętrzny trójkąt $p_{-1}, p_{-2}, p_{-3}$, zawierający w~swoim wnętrzu wszystkie punkty z~$P$, jednak jego wierzchołki nie~mogą leżeć wewnątrz żadnego opisanego na~dowolnej trójce punktów z~$P$. Będziemy nazywać go \emph{supertrójkątem}. Oznacza~to, że~obliczamy triangulację nie~tylko zbioru $P$, ale $P \cup \{p_{-1}, p_{-2}, p_{-3}\}$.
 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=80mm]{images/triangulacja5.png}
+\caption{Przykład supertrójkąta zawierającego w sobie cały zbiór $P$}
+\label{supertriangle}
+\end{figure}
+
 Jak już~powiedzieliśmy, algorytm jest losowy i~inkrementacyjny. Oznacza~to, że~w~każdym kroku do~triangulacji dodawany jest jeden, losowo dobrany, jeszcze nie~użyty punkt~$p_{r}$ ze~zbioru~$P$. Najpierw ustalamy, w~którym trójkącie dodany zostanie nowy punkt. Metoda ustalania opisana zostanie za~chwilę. Następnie dodajemy nowe krawędzie łączące nowo dodany punkt z~wierzchołkami trójkąta, we~wnętrzu którego się~znajduje. Jeżeli punkt~$p_{r}$ wypadnie na~już istniejącej krawędzi, krawędź~ta jest najpierw usuwana, a~następnie punkt łączony jest nowymi krawędziami ze~wszystkimi wierzchołkami powstałego czworoboku.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=130mm]{images/triangulacja6.png}
+\caption{Możliwe przypadki umiejscowienia nowego punktu w triangulacji}
+\label{newpointposition}
+\end{figure}
 
 \subsection{Poprawianie Nieoptymalnych Krawędzi}
 
@@ -446,6 +526,13 @@ Jako przykład weźmy dwa czworościany~$A B C D$ oraz~$A B C E$ współdzieląc
 
 Nasz graf musi być planarny, co~w~przypadku~2D oznaczało, że~żadna para krawędzi nie może~się przecinać. Jednak w~przypadku trójwymiarowym to~nie~wystarczy. Spójrzmy na~ten problem poprzez elementy podziału naszej przestrzeni - sympleksy. Poprzednio używaliśmy trójkątów zbudowanych z~krawędzi, które nie~mogły się~przecinać. Teraz używamy czworościanów zbudowanych z~trójkątów, więc jako zasadę planarności możemy przyjąć, że~te~trójkąty nie~mogą się~przecinać. Trójkąt~$A$ przecina trójkąt~$B$ w~przestrzeni trójwymiarowej, jeżeli którakolwiek z~krawędzi trójkąta~$A$ przecina którąkolwiek z~krawędzi trójkąta $B$, lub krawędź z~$A$ przecina płaszczyznę trójkąta $B$, a~punkt przecięcia znajduje się~we~wnętrzu trójkąta~$B$. Tak więc nasza poprzednia definicja planarności musi zostać rozszerzona o~zapis, że~żadna para trójkątów w~triangulacji nie może~się przecinać.
 
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=150mm]{images/triangulacja_3d.png}
+\caption{Przykład niejednoznaczności triangulacji w trzech wymiarach}
+\label{triangulation3d}
+\end{figure}
+
 Jak pamiętamy, \emph{Triangulacja Delaunay} ma~na~celu maksymalizację minimalnych kątów. Jednak w~przypadku czworościanów stosować będziemy bardziej ogólną zasadę przeznaczoną dla~$n$-wymiarowych triangulacji. Zasada ta mówi, że~dla~każdego czworościanu triangulacji, sfera opisana na~tym czworościanie nie może zawierać żadnego innego punktu z~tej~triangulacji.
 
 \subsection{Obliczanie}
@@ -502,6 +589,13 @@ Zastosowane algorytmy pozwalają na~całkowicie poprawne podziały jedynie dla o
 
 W~celu obliczenia triangulacji punktów podziału naszego obiektu, aplikacja korzysta z~algorytmu Bowyera-Watsona opisanego w poprzednim rozdziale.
 
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=140mm]{images/app1.png}
+\caption{Triangulacja wygenerowana przez aplikację}
+\label{apptriangulation}
+\end{figure}
+
 \subsection{Struktury Danych}
 
 Podstawową strukturą danych dla naszego algorytmu jest lista obiektów \code{Tetrahedron}. Obiekty tej klasy przechowują informację o~tym, które z~punktów podziału stanowią wierzchołki czworościanu. Korzystając z~tej informacji obliczana jest pozycja punktu stanowiącego środek sfery opisanej na~tym czworościanie, oraz kwadrat jego odległości od~wierzchołków. Obydwie z~tych właściwości są~dla danego czworościanu niezmienne, możemy więc obliczyć je~raz i~przechowywać wyniki do~wykorzystania w~wyszukiwaniu sympleksów obejmujących nowo dodane punkty.
@@ -523,6 +617,13 @@ Dodatkowo, w~czasie budowania nowych czworościanów sprawdzamy, czy nowodawane 
 \section{Obliczanie Diagramu}
 
 Obliczanie \emph{Diagramu Voronoi} zrealizowane zostało z~użyciem metody opisanej w~rozdziale czwartym. Powodem tego jest o~wiele prostsza implementacja względem algorytmu Fortune dla trzech wymiarów. Niektóre ze szczegółów implementacyjnych pochodzą z~zasobów W:BLUT \cite{fvan}.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=140mm]{images/app2.png}
+\caption{Komórka Voronoi obliczona przez aplikację}
+\label{appcell}
+\end{figure}
 
 \subsection{Struktury Danych}
 
@@ -600,6 +701,13 @@ Najpierw musimy sparować luźne krawędzie. Aby tego dokonać, dla każdej każ
 
 Możemy teraz przejść do~łączenia półkrawędzi z~\code{newHalfEdges} w~zamknięty łańcuch. Dla każdej z~nich, wyszukujemy następnik poprzez sąsiadujące ściany przechodząc wskaźniki w kolejności \code{newHalfEdge->pair->next->pair->next->pair}.
 
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=100mm]{images/chain.png}
+\caption{Ilustracja wyboru półkrawędzi do połączenia w łańcuch}
+\label{chain}
+\end{figure}
+
 Teraz pozostaje nam tylko przypisanie płaszczyzny tnącej do~właśnie utworzonej ściany, kończąc w~ten sposób cięcie bierzącej siatki.
 
 \begin{algorithm}
@@ -629,6 +737,13 @@ Teraz pozostaje nam tylko przypisanie płaszczyzny tnącej do~właśnie utworzon
 \section{Podział Bryły}
 
 Skoro wiemy już jak podzielić prostopadłościan na~poszczególne komórki \emph{Diagramu Voronoi}, podzielenie wczytanego obiektu na~fragmenty jest łatwe. Korzystając z~już wygenerowanych komórek, powtarzamy tą~samą procedurę co~poprzednio, tym razem jednak jako bazowej bryły używamy wczytanego obiektu. Aby nie wykonywać dużej ilości nadmiarowych cięć, zamiast dwa razy iterować po~punktach ze~zbioru centrów, tym razem iterujemy po~wygenerowanych komórkach i~ich ścianach.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=140mm]{images/app3.png}
+\caption{Bryła podzielona w aplikacji na pięć fragmentów}
+\label{newpointposition}
+\end{figure}
 
 Dla każdej komórki diagramu rozpoczynamy od~nowej kopii bryły, wybierając płaszczyzny ze~ścian tej komórki i~wykonując takie same cięcia, jak omówione powyżej. Należy zauważyć, że~nie wszystkie ze~ścian komórek diagramu będą posiadać płaszczyzny tnące. Mowa tu~o~oryginalnych ścianach prostopadłościanu wyjściowego z~poprzedniego kroku. Ponieważ cięcie z~użyciem ich płaszczyzn byłoby bezcelowe, są~one pomijane.
 
