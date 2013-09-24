@@ -34,7 +34,7 @@ void ViewWidget::initializeGL()
     glEnable(GL_CULL_FACE);
     glFrontFace(GL_CCW);
     glCullFace(GL_BACK);
-    glClearColor(0.1f, 0.1f, 0.1f, 1);
+    glClearColor(255.0f, 255.0f, 255.0f, 1);
 }
 
 void ViewWidget::paintGL()
@@ -428,7 +428,7 @@ void ViewWidget::keyPressEvent(QKeyEvent *e)
             break;
         case Qt::Key_R:
             this->voronoiCell = 0;
-            object->generateRandomPoints(15);
+            object->generateRandomPoints(5);
             object->createTriangulation();
             object->createVoronoi();
             object->createFragments();

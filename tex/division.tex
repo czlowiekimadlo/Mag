@@ -93,15 +93,15 @@ W~pierwszym rozdziale pracy zarysujemy jej temat, przedstawimy jego genezę oraz
 
 \section{Sformułowanie Problemu}
 
-Tematem niniejszej pracy jest opracowanie metody podziału obiektów na~części. Metoda powinna działać w~czasie rzeczywistym, a~wynik~jej działania powinien być zbliżony do~realistycznego. Przygotowana implementacja powinan być modularna i~pozwalać na~łatwe dopasowanie jej do~różnorodnych rendererów oraz silników fizycznych. Dodatkowo aplikacja powinna umożliwiać podstawową parametryzację podziałów, zapewniając conajmniej możliwość okreslenia ilości uzyskiwanych fragmentów.
+Tematem niniejszej pracy jest opracowanie metody podziału obiektów na~części. Metoda powinna działać w~czasie rzeczywistym, a~wynik~jej działania powinien być zbliżony do~realistycznego. Przygotowana implementacja powinna być modularna i~pozwalać na~łatwe dopasowanie jej do~różnorodnych rendererów oraz silników fizycznych. Dodatkowo aplikacja powinna umożliwiać podstawową parametryzację podziałów, zapewniając co najmniej możliwość określenia ilości uzyskiwanych fragmentów.
 
 \section{Geneza Tematu}
 
-Początkowo tematem pracy miała być dynamika materiału sypkiego przedstawiona jako szczególny przypadek dynamiki płynów. Jednak w~miarę jego badania okazało się, że~jego istotnym uzupełnieniem jest zagadnienie jego uzyskiwania. W~wielu przypadkach, w~których miałaby ona zastosowanie, równie ważne jak modelowanie zachowania piasku miało jego pochodzenie. Podział jednolitej bryły na~fragmenty jako dopełnienie zachowań fizycznych dużej ilości drobnych obiektów okazał się na~tyle rozległy i~interesujący, że~praca została ograniczona tylko do~tego zagadnienia. Mimo to, pierwotny temat nie został całkiem zarzucony i~pewne możliwości dalszego rozwoju zostały przedstawione w~ostatnim rozdziale niniejszej pracy.
+Początkowo tematem pracy miała być dynamika materiału sypkiego przedstawiona jako szczególny przypadek dynamiki płynów. Jednak w~miarę jego badania okazało się, że~jego istotnym uzupełnieniem jest zagadnienie jego uzyskiwania. Podział jednolitej bryły na~fragmenty jako dopełnienie zachowań fizycznych dużej ilości drobnych obiektów okazał się na~tyle rozległy i~interesujący, że~praca została ograniczona tylko do~tego zagadnienia. Mimo to, pierwotny temat nie został całkiem zarzucony i~pewne możliwości dalszego rozwoju zostały przedstawione w~ostatnim rozdziale niniejszej pracy.
 
 \section{Zastosowania}
 
-Przedstawione w~tej pracy metody mogą zostać użyte w~modelowaniu w~czasie rzeczywistym, np. w~grach komputerowych, ale nie tylko. Można użyć ich także we~wszelkiego rodzaju symulacjach zniszczeń, oraz modelach wymagających rozpad obiektów do~materiału sypkiego. Przykładem takiego zastosowania może być symulacja rozmywania wałów przeciwpowodziowych.
+Przedstawione w~tej pracy metody mogą zostać użyte w~modelowaniu w~czasie rzeczywistym, np. w~grach komputerowych, ale nie tylko. Można użyć ich także we~wszelkiego rodzaju symulacjach zniszczeń, oraz modelach wymagających rozpadu obiektów do~materiału sypkiego. Przykładem takiego zastosowania może być symulacja rozmywania wałów przeciwpowodziowych.
 
 Stosowane obecnie rozwiązania podziałów w~czasie rzeczywistym, zwłaszcza te~nie nastawione na~realistyczne odwzorowanie fizyki, najczęściej korzystają ze~statycznych podziałów obiektów. Prowadzi to~do~takich problemów, jak powtarzalność wyników, nienaturalne zachowanie (nierealistyczny rozpad względem punktu kolizji) oraz niezachowanie objętości.
 
@@ -109,7 +109,7 @@ Z~drugiej strony aplikacje wymagające zaawansowanej fizyki i~zbliżone do~rzecz
 
 \chapter{Diagram Voronoi}
 
-W~niniejszym rozdziale wprowadzone zostanie pojęcie \emph{Diagramu Voronoi}, znanego także jako \emph{Teselacją Dirichleta}. Omówione zostaną najważniejsze właściwości diagramu, jego praktyczne zastosowania oraz metoda tworzenia w przestrzeni dwuwymiarowej.
+W~niniejszym rozdziale wprowadzone zostanie pojęcie \emph{Diagramu Voronoi}, znanego także jako \emph{Teselacja Dirichleta}. Omówione zostaną najważniejsze właściwości diagramu, jego praktyczne zastosowania oraz metoda tworzenia w przestrzeni dwuwymiarowej.
 
 \section{Definicja}
 
@@ -126,7 +126,7 @@ Vor(p_{i}) := \{ x \in E | \forall q \in P, q \neq p_{i}, dist(x,p_{i}) < dist(x
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=70mm]{images/voronoi1.png}
-\caption{Przykładowy diagram Voronoi}
+\caption{Przykładowy diagram Voronoi. Źródło \cite{geometria}}
 \label{voronoidiagram}
 \end{figure}
 
@@ -159,7 +159,7 @@ Ve(p,q) := \{ x \in E | \forall r \in P, p \neq r, q \neq r, p,q \in Cr(x), r \n
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=70mm]{images/voronoi2.png}
-\caption{Punkty krawędzi oraz wierzchołki}
+\caption{Punkty krawędzi oraz wierzchołki. Źródło \cite{geometria}}
 \label{voronoicircles}
 \end{figure}
 
@@ -186,7 +186,7 @@ Diagram wykorzystywany jest także w górnictwie, klimatologii i innych dziedzin
 
 \section{Obliczanie Diagramu}
 
-Jak zauważyliśmy w~sekcji \emph{Właściwości}, komórka diagramu jest~przecięciem zbioru półpłaszczyzn. Obserwacja ta~pozwala utworzyć pojedyńczą komórkę w~czasie~$O(n \log{n})$, przy zastosowaniu algorytmu przecinania półpłaszczyzn opisanego w~\emph{Geometrii Obliczeniowej} w~rozdziale czwartym~\cite{geometria}. Złożoność obliczeniowa dla~całego diagramu wynosi~$O(n^2 \log{n})$.
+Jak zauważyliśmy w~sekcji \emph{Właściwości}, komórka diagramu jest~przecięciem zbioru półpłaszczyzn. Obserwacja ta~pozwala utworzyć pojedyńczą komórkę w~czasie~$O(n \log{n})$, przy zastosowaniu algorytmu przecinania półpłaszczyzn opisanego w~\cite{geometria}. Złożoność obliczeniowa dla~całego diagramu wynosi~$O(n^2 \log{n})$.
 
 Optymalnym algorytmem obliczania diagramu Voronoi jest \emph{algorytm Fortune'a} obliczający wszystkie komórki w~czasie~$O(n \log{n})$. Stwierdzenie to opiera się na fakcie, że problem sortowania $n$ liczb rzeczywistych można sprowadzić do tworzenia diagramu Voronoi, a więc jego obliczenie zajmuje najwyżej $\Omega(n \log{n})$ czasu.
 
@@ -194,12 +194,12 @@ Optymalnym algorytmem obliczania diagramu Voronoi jest \emph{algorytm Fortune'a}
 
 \emph{Algorytm Fortune'a} buduje diagram poprzez skanowanie płaszczyzny poziomą prostą. Zbiera on~informacje o~przecięciu już~wygenerowanej struktury z~prostą skanującą. Informacja ta~zmienia się~tylko w~określonych momentach zwanych \emph{zdarzeniami punktowymi}.
 
-Podstawą dla~rozpoczęcia algorytmu jest~zbiór $P = \{p_{1},p_{2},...,p_{n}\}$ punktów na~płaszczyźnie~$E$. Płaszczyzna ta~skanowana jest prostą $l$ przesuwającą się z~góry na~dół. Największym problemem w~budowaniu komórek jest fakt, że~na~ich~kształt wpływają nieprzeskanowane jeszcze punkty poniżej prostej. Kiedy prosta dociera do~komórki $Vor(p_{i})$ nie~posiada ona jeszcze informacji o~punkcie~$p_{i}$. Dlatego też w~praktyce stosuje się~odrobine inne podejście. Zamiast badać przecięcie diagramu z~prostą skanującą~$l$, zbierane są~informacje o~tych punktach~$q \in E$ powyżej prostej, na~które nie~może już~mieć wpływu żaden punkt~$p_{i}$ znajdujący się~pod~nią.
+Podstawą dla~rozpoczęcia algorytmu jest~zbiór $P = \{p_{1},p_{2},...,p_{n}\}$ punktów na~płaszczyźnie~$E$. Płaszczyzna ta~skanowana jest prostą $l$ przesuwającą się z~góry na~dół. Największym problemem w~budowaniu komórek jest fakt, że~na~ich~kształt wpływają nieprzeskanowane jeszcze punkty poniżej prostej. Kiedy prosta dociera do~komórki $Vor(p_{i})$ nie~posiada ona jeszcze informacji o~punkcie~$p_{i}$. Dlatego też w~praktyce stosuje się~odrobinę inne podejście. Zamiast badać przecięcie diagramu z~prostą skanującą~$l$, zbierane są~informacje o~tych punktach~$q \in E$ powyżej prostej, na~które nie~może już~mieć wpływu żaden punkt~$p_{i}$ znajdujący się~pod~nią.
 
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=60mm]{images/voronoi3.png}
-\caption{Przykład plaży}
+\caption{Przykład plaży. Źródło \cite{geometria}}
 \label{voronoibeach}
 \end{figure}
 
@@ -214,7 +214,7 @@ Pojawienie się~nowej paraboli~$\beta_{i}$ możliwe jest jedynie przez natrafien
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=150mm]{images/voronoi4.png}
-\caption{Pojawienie się nowej paraboli}
+\caption{Pojawienie się nowej paraboli. Źródło \cite{geometria}}
 \label{voronoinewarc}
 \end{figure}
 
@@ -223,7 +223,7 @@ Drugim typem zdarzenia wpływającym na~kształt plaży, a~przez to~diagramu, je
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=150mm]{images/voronoi6.png}
-\caption{Zanik paraboli}
+\caption{Zanik paraboli. Źródło \cite{geometria}}
 \label{voronoidelarc}
 \end{figure}
 
@@ -232,12 +232,20 @@ Drugim typem zdarzenia wpływającym na~kształt plaży, a~przez to~diagramu, je
 Kolejnym istotnym elementem algorytmu jest~określenie odpowiednich struktur danych do~przechowywania informacji o~już utworzonych częściach diagramu, kolejce zdarzeń, oraz o~bierzącym stanie prostej (a~w~zasadzie plaży). Proponowane dla nich jest użycie następujących implementacji:
 \begin{itemize}
 \item
-Gotowe elementy diagramu przechowujemy w~strukturze danych opisanej w~\emph{Geometrii Obliczeniowej} w~rozdziale drugim\cite{geometria}. Składa się~ona z~listy wierzchołków wraz z~ich~współrzędnymi, listy komórek ze~wskazaniem na~początki łańcuchów krawędzi zewnętrznych i~wewnętrznych, oraz listę krawędzi, opisanych poprzez punkt początkowy, kolejną i~poprzednią krawędź, bliźniaczą krawędź oraz komórkę. Struktury te będziemy zbiorczo oznaczać jako $\mathcal{D}$. Aby po zakończeniu obliczeń dane były spójne, potrzebne jest jeszcze ograniczenie przestrzeni, na której generowany jest diagram.
+Gotowe elementy diagramu przechowujemy w~strukturze danych opisanej w~\cite{geometria}. Składa się~ona z~listy wierzchołków wraz z~ich~współrzędnymi, listy komórek ze~wskazaniem na~początki łańcuchów krawędzi zewnętrznych i~wewnętrznych, oraz listę krawędzi, opisanych poprzez punkt początkowy, kolejną i~poprzednią krawędź, bliźniaczą krawędź oraz komórkę. Struktury te będziemy zbiorczo oznaczać jako $\mathcal{D}$. Aby po zakończeniu obliczeń dane były spójne, potrzebne jest jeszcze ograniczenie przestrzeni, na której generowany jest diagram.
 \item
-Do~reprezentowania plaży używane jest~wyważone drzewo binarne $\tau$. Jego liście przechowywują informacje łukach należących do~$x$-monotonicznej linii plaży, ułożonych w~kolejności od~lewej. Wewnętrzne węzły drzewa reprezentują punkty załamania plaży. Punkty te~przechowywane są~jako pary punktów~$\langle p_{i}, p_{j}\rangle$, gdzie~$p_{i}$ definiuje lewą parabolę, a~$p_{j}$ prawą parabolę. Dzięki takiej reprezentacji możemy znaleźć łuk znajdujący się~nad nowym punktem w~czasie~$O(\log{n})$ poprzez porównywanie współrzędnej~$x$ węzłów pośrednich i~prostej~$l$ w~ustalonym punkcie czasu.
+Do~reprezentowania plaży używane jest~zrównoważone drzewo binarne $\tau$. Jego liście przechowywują informacje łukach należących do~$x$-monotonicznej linii plaży, ułożonych w~kolejności od~lewej. Wewnętrzne węzły drzewa reprezentują punkty załamania plaży. Punkty te~przechowywane są~jako pary punktów~$\langle p_{i}, p_{j}\rangle$, gdzie~$p_{i}$ definiuje lewą parabolę, a~$p_{j}$ prawą parabolę. Dzięki takiej reprezentacji możemy znaleźć łuk znajdujący się~nad nowym punktem w~czasie~$O(\log{n})$ poprzez porównywanie współrzędnej~$x$ węzłów pośrednich i~prostej~$l$ w~ustalonym punkcie czasu.
 Każdy liść drzewa $\tau$ przechowuje także wskaźnik do~zdarzenia w~kolejce oznaczającego zanik odpowiedniego łuku $\alpha$. Wskaźnik ten jest pusty, jeżeli łuk nie zniknie, lub wydarzenie nie zostało jeszcze wykryte. Każdy z~węzłów pośrednich posiada wskaźnik na~krawędź z~listy opisanej powyżej, która rysowana jest przez to~przecięcie parabol.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=100mm]{images/tree.png}
+\caption{Drzewo parabol. Źródło \cite{geometria}}
+\label{voronoidelarc}
+\end{figure}
+
 \item
-Kolejka zdarzeń $Q$ priorytetyzuje je~ze~względu na~współrzędną~$y$ jego wystąpienia. Przechowywane są~jedynie przyszłe zdarzenia, które są~już~znane. Dla pojawiania się ~owych łuków, przechowywane są~ich~punkty~$p_{i}$. Dla~znikających łuków przechowywany jest~najniższy punkt z~okręgu ze~wskaźnikiem do~liścia z~$\tau$, który go~reprezentuje.
+Kolejka zdarzeń $Q$ hierarchizuje je~ze~względu na~współrzędną~$y$ jego wystąpienia. Przechowywane są~jedynie przyszłe zdarzenia, które są~już~znane. Dla pojawiania się ~owych łuków, przechowywane są~ich~punkty~$p_{i}$. Dla~znikających łuków przechowywany jest~najniższy punkt z~okręgu ze~wskaźnikiem do~liścia z~$\tau$, który go~reprezentuje.
 \end{itemize}
 
 \subsection{Wykrywanie Zdarzeń}
@@ -332,7 +340,7 @@ Bazując na~powyższych ustaleniach można spisać gotowy algorytm. Warto zauwa�
 
 \chapter{Triangulacja Delaunay}
 
-W~tym~rozdziale przyjżymy się~bliżej \emph{Triangulacji Delaunay}. Sprawdzimy czym charakteryzuje się~ten~rodzaj triangulacji oraz dowiemy się, jaki jest~jego związek z~\emph{Diagramem Voronoi}. Następnie omówimy sposób jej~tworzenia.
+W~tym~rozdziale przyjrzymy się~bliżej \emph{Triangulacji Delaunay}. Sprawdzimy czym charakteryzuje się~ten~rodzaj triangulacji oraz dowiemy się, jaki jest~jego związek z~\emph{Diagramem Voronoi}. Następnie omówimy sposób jej~tworzenia.
 
 \section{Definicja i Właściwości}
 
@@ -343,7 +351,7 @@ Zanim przejdziemy do określania specyficznych właściwości \emph{Triangulacji
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=70mm]{images/triangulacja1.png}
-\caption{Przykładowa triangulacja}
+\caption{Przykładowa triangulacja. Źródło \cite{geometria}}
 \label{triangulationexample}
 \end{figure}
 
@@ -368,14 +376,14 @@ Dla pary trójkątów~$p_{i}, p_{j}, p_{l}$ oraz~$p_{i}, p_{k}, p_{j}$ z~$\mathc
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=150mm]{images/triangulacja2.png}
-\caption{Zastosowanie operacji \emph{edge flip}}
+\caption{Zastosowanie operacji \emph{edge flip}. Źródło \cite{geometria}}
 \label{edgeflip}
 \end{figure}
 
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=70mm]{images/triangulacja3.png}
-\caption{Okrąg opisany na trójkącie wykazujący nieoptymalną krawędź}
+\caption{Okrąg opisany na trójkącie wykazujący nieoptymalną krawędź. Źródło \cite{geometria}}
 \label{edgetest}
 \end{figure}
 
@@ -395,7 +403,7 @@ Stosując powyższą metodę, możemy z~dowolnej triangulacji~$\mathcal{T}$ uzys
 \end{algorithmic}
 \end{algorithm}
 
-\section{Dualizm Triangulacji Delaunay i Diagramu Voronoi}
+\section{Dualność Triangulacji Delaunay i Diagramu Voronoi}
 
 W~poprzednim rozdziale opisywaliśmy Diagram Voronoi. Podobnie jak~Triangulacja Delaunay, tworzony jest on~na podstawie zbioru punktów~$P:=\{ p_{1},p_{2},...,p_{n} \}$. Posiadając wygenerowany diagram~$Vor(P)$, tworzymy graf~$\mathcal{G}$ o~wierzchołkach w~$P$. Dla każdej krawędzi w~$Vor(P)$ rozdzielającej punkty $p_{i}, p_{j}$ dodajemy nową krawędź do~grafu~$\mathcal{G}$. Jeżeli narysujemy wszystkie krawędzie grafu~$\mathcal{G}$ jako linie proste, otrzymamy triangulację zbioru punktów~$P$. Graf ten~jest grafem dualnym dla~grafu~$Vor(P)$ -~komórki grafu~$Vor(P)$ są~wierzchołkami grafu~$\mathcal{G}$, natomiast trójkąty~$\mathcal{G}$ są~wierzchołkami w~$Vor(P)$.
 
@@ -403,17 +411,17 @@ W~poprzednim rozdziale opisywaliśmy Diagram Voronoi. Podobnie jak~Triangulacja 
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=100mm]{images/dualizm.png}
-\caption{Triangulacja Delaunay i odpowiadający jej Diagram Voronoi}
+\caption{Triangulacja Delaunay i odpowiadający jej Diagram Voronoi. Źródło \cite{geometria}}
 \label{duality}
 \end{figure}
 
 \section{Obliczanie Triangulacji}
 
-Poznaliśmy już jedną metodę tworzenia Triangulacji Delaunay -~stosowanie procedury \emph{flip edge} do~momentu, w~którym nie~można zoptymalizować już~żadnej z~krawędzi. Posiada ona jednak pewne wady. Przede wszystkim operuje ona na~już~istniejącej triangulacji, więc wejście w~postaci zbioru punktów na~płaszczyźnie nie~jest~wystarczające. Dodatkowo, metoda ta~nie~jest najoptymalniejsza, gdyż jej złożoność obliczeniowa wynosi~$O(n^2)$.
+Poznaliśmy już jedną metodę tworzenia Triangulacji Delaunay -~stosowanie procedury \emph{flip edge} do~momentu, w~którym nie~można zoptymalizować już~żadnej z~krawędzi. Posiada ona jednak pewne wady. Przede wszystkim operuje ona na~już~istniejącej triangulacji, więc wejście w~postaci zbioru punktów na~płaszczyźnie nie~jest~wystarczające. Dodatkowo, metoda ta~nie~jest najbardziej optymalna, gdyż jej złożoność obliczeniowa wynosi~$O(n^2)$.
 
 \subsection{Inicjalizacja Algorytmu}
 
-Wiemy także, że~triangulację tą~możemy uzyskać poprzez dualizm Diagramu Voronoi, który także potrafimy wygenerować. Teraz rozpatrzymy algorytm generowania triangulacji wprost z użyciem losowej procedury inkrementacyjnej.
+Wiemy także, że~triangulację tę~możemy uzyskać poprzez dualność Diagramu Voronoi, który także potrafimy wygenerować. Teraz rozpatrzymy algorytm generowania triangulacji wprost z użyciem losowej procedury inkrementacyjnej.
 
 Tak jak~poprzednio, triangulację generować będziemy dla zbioru punktów~$P:=\{ p_{1},p_{2},...,p_{n} \}$. Aby uniknąć problemów z~nieograniczonymi trójkątami na~brzegach triangulacji, dodajemy do~niej zewnętrzny trójkąt $p_{-1}, p_{-2}, p_{-3}$, zawierający w~swoim wnętrzu wszystkie punkty z~$P$, jednak jego wierzchołki nie~mogą leżeć wewnątrz żadnego opisanego na~dowolnej trójce punktów z~$P$. Będziemy nazywać go \emph{supertrójkątem}. Oznacza~to, że~obliczamy triangulację nie~tylko zbioru $P$, ale $P \cup \{p_{-1}, p_{-2}, p_{-3}\}$.
 
@@ -421,7 +429,7 @@ Tak jak~poprzednio, triangulację generować będziemy dla zbioru punktów~$P:=\
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=80mm]{images/triangulacja5.png}
-\caption{Przykład supertrójkąta zawierającego w sobie cały zbiór $P$}
+\caption{Przykład supertrójkąta zawierającego w sobie cały zbiór $P$. Źródło \cite{geometria}}
 \label{supertriangle}
 \end{figure}
 
@@ -430,13 +438,13 @@ Jak już~powiedzieliśmy, algorytm jest losowy i~inkrementacyjny. Oznacza~to, ż
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=130mm]{images/triangulacja6.png}
-\caption{Możliwe przypadki umiejscowienia nowego punktu w triangulacji}
+\caption{Możliwe przypadki umiejscowienia nowego punktu w triangulacji. Źródło \cite{geometria}}
 \label{newpointposition}
 \end{figure}
 
 \subsection{Poprawianie Nieoptymalnych Krawędzi}
 
-Ponieważ po~wykonaniu powyższych operacji uzyskana triangulacja może nie~być optymalna, w~każdym kroku bierzący zbiór punktów optymalizowany jest pod kątem maksymalizacji minimalnych kątów metodą \emph{flip edge} poprzez zastosowanie procedury $LegalizeEdge$ na~wszystkich potencjalnie nieoptymalnych krawędziach.
+Ponieważ po~wykonaniu powyższych operacji uzyskana triangulacja może nie~być optymalna, w~każdym kroku bieżący zbiór punktów optymalizowany jest pod kątem maksymalizacji minimalnych kątów metodą \emph{flip edge} poprzez zastosowanie procedury $LegalizeEdge$ na~wszystkich potencjalnie nieoptymalnych krawędziach.
 
 \begin{algorithm}
 \caption{$LegalizeEdge(p_{r}, \overline{p_{i} p_{j}}, \mathcal{T})$ \cite{geometria}}
@@ -486,7 +494,7 @@ Do~omówienia pozostały dwie istotne części algorytmu. Są~nimi: wybór trój
 
 \subsection{Wyszukiwanie Trójkątów}
 
-Wyszukiwanie trójkątów zrealizujemy poprzez użycie skierowanego, niecyklicznego grafu~$\mathcal{D}$. Jego liście oznaczać będą trójkąty bierzącej triangulacji~$\mathcal{T}$, wewnętrzne wierzchołki będą symbolizować trójkąty, które istniały w~triangulacji we~wcześniejszych krokach, lecz zostały już~zastąpione. Graf~$\mathcal{D}$ inicjowany~jest pojedyńczym węzłem-liściem odpowiadającym supertrójkątowi~$p_{-1} p_{-2} p_{-3}$.
+Wyszukiwanie trójkątów zrealizujemy poprzez użycie skierowanego, niecyklicznego grafu~$\mathcal{D}$. Jego liście oznaczać będą trójkąty bieżącej triangulacji~$\mathcal{T}$, wewnętrzne wierzchołki będą symbolizować trójkąty, które istniały w~triangulacji we~wcześniejszych krokach, lecz zostały już~zastąpione. Graf~$\mathcal{D}$ inicjowany~jest pojedyńczym węzłem-liściem odpowiadającym supertrójkątowi~$p_{-1} p_{-2} p_{-3}$.
 
 Aby podzielić trójkąt~$p_{i} p_{j} p_{k}$ na~trzy (lub~dwa) nowe trójkąty, dodajemy do~jego liścia nowe liście odpowiadające jego podziałowi, zamieniając go~w~wierzchołek wewnętrzny. Jeżeli zamieniamy dwa trójkąty~$p_{k} p_{i} p_{j}$ i~$p_{i} p_{j} p_{l}$ na~trójkąty~$p_{k} p_{i} p_{l}$ i~$p_{k} p_{l} p_{j}$ przez operację \emph{edge~flip}, tworzymy dla nich dwa nowe liście i~podłączamy do~węzłów~$p_{k} p_{i} p_{j}$ i~$p_{i} p_{j} p_{l}$. Używając tak utworzonego grafu~$\mathcal{D}$ do~zlokalizowania~$p_{r}$ aby dodać do~triangulacji, zaczynamy od~węzłą supertrójkąta i~sprawdzamy, w~którym z~jego dzieci mieści~się nowy punkt. Powtarzamy tę~operację aż~dotrzemy do~jednego z~liści.
 
@@ -522,9 +530,9 @@ Triangulacja zdefiniowana jest dla przestrzeni $n$-wymiarowej, możemy więc spo
 
 W poprzednim rozdziale przedstawiliśmy triangulację, jako podział płaszczyzny na sympleksy współdzielące wierzchołki i~krawędzie. Tą~samą definicję możemy zastosować w~3D, stosując jako sympleks czworościan oraz dodając do~niej współdzielenie ścian. Wiedzieliśmy, że~składa~się ona jedynie z~sympleksów, ponieważ dowolny wielokąt można podzielić na~trójkąty. Zasada ta~obowiązuje także w~przypadku brył wypukłych, teraz jednak zamiast pojedyńczych krawędzi, dodajemy trójkątne ściany (co~może sprowadzać~się do~dodania kilku, jednej, lub żadnych nowych krawędzi), aż~do~momentu, w~którym dodanie kolejnej spowoduje stworzenie grafu nieplanarnego. Jak się~jednak okazuje, możemy uzyskać poprawną triangulację nie~wypełniając jej całkowicie możliwymi krawędziami. Jeżeli nasz graf używa już wszystkich punktów~$P$, zawiera tylko kompletne czworościany i~tworzy bryłę wypukłą, to~możemy zakończyć jego tworzenie.
 
-Jako przykład weźmy dwa czworościany~$A B C D$ oraz~$A B C E$ współdzielące ścianę~$A B C$. Jeżeli odległość pomiędzy punktami~$D$ i~$E$ jest na~tyle mała, że~wewnątrz kuli, której średnicą jest~ta krawędź nie~zawiera~się żaden z~punktów~$A, B, C$, to~dodanie krawędzi~$\overline{D E}$ da~nam optymalniejszą triangulację. Jeżeli jednak wewnątrz (lecz~nie~na~powierzchni) wspomnianej kuli znajduje się inny punkt, to~optymalniej jest niedodawać nowej krawędzi. W~obydwu przypadkach, niezależnie od~dodania krawędzi $\overline{D E}$, mamy poprawne triangulacje (w~rozumieniu ogólnym).
+Jako przykład weźmy dwa czworościany~$A B C D$ oraz~$A B C E$ współdzielące ścianę~$A B C$. Jeżeli odległość pomiędzy punktami~$D$ i~$E$ jest na~tyle mała, że~wewnątrz kuli, której średnicą jest~ta krawędź nie~zawiera~się żaden z~punktów~$A, B, C$, to~dodanie krawędzi~$\overline{D E}$ da~nam optymalniejszą triangulację. Jeżeli jednak wewnątrz (lecz~nie~na~powierzchni) wspomnianej kuli znajduje się inny punkt, to~lepiej jest nie~dodawać nowej krawędzi. W~obydwu przypadkach, niezależnie od~dodania krawędzi $\overline{D E}$, mamy poprawne triangulacje (w~rozumieniu ogólnym).
 
-Nasz graf musi być planarny, co~w~przypadku~2D oznaczało, że~żadna para krawędzi nie może~się przecinać. Jednak w~przypadku trójwymiarowym to~nie~wystarczy. Spójrzmy na~ten problem poprzez elementy podziału naszej przestrzeni - sympleksy. Poprzednio używaliśmy trójkątów zbudowanych z~krawędzi, które nie~mogły się~przecinać. Teraz używamy czworościanów zbudowanych z~trójkątów, więc jako zasadę planarności możemy przyjąć, że~te~trójkąty nie~mogą się~przecinać. Trójkąt~$A$ przecina trójkąt~$B$ w~przestrzeni trójwymiarowej, jeżeli którakolwiek z~krawędzi trójkąta~$A$ przecina którąkolwiek z~krawędzi trójkąta $B$, lub krawędź z~$A$ przecina płaszczyznę trójkąta $B$, a~punkt przecięcia znajduje się~we~wnętrzu trójkąta~$B$. Tak więc nasza poprzednia definicja planarności musi zostać rozszerzona o~zapis, że~żadna para trójkątów w~triangulacji nie może~się przecinać.
+Nasz graf musi być planarny, co~w~przypadku~2D oznaczało, że~żadna para krawędzi nie może~się przecinać. Jednak w~przypadku trójwymiarowym to~nie~wystarczy. Spójrzmy na~ten problem poprzez elementy podziału naszej przestrzeni - sympleksy. Poprzednio używaliśmy trójkątów zbudowanych z~krawędzi, które nie~mogły się~przecinać. Teraz używamy czworościanów zbudowanych z~trójkątów, więc jako zasadę planarności możemy przyjąć, że~te~trójkąty nie~mogą się~przecinać. Trójkąt~$A$ przecina trójkąt~$B$ w~przestrzeni trójwymiarowej, jeżeli którakolwiek z~krawędzi trójkąta~$A$ przecina którąkolwiek z~krawędzi trójkąta $B$, lub krawędź z~$A$ przecina płaszczyznę trójkąta $B$, a~punkt przecięcia znajduje się~we~wnętrzu trójkąta~$B$. Tak więc nasza poprzednia definicja planarności musi zostać rozszerzona o~zapis, że~żadna para trójkątów w~triangulacji nie może~się przecinać. Rysunek \ref{triangulation3d} obrazuje dwa przypadki czworościanów współdzielących ścianę (oznaczoną~na~szaro), w~których dodanie krawędzi łączącej nie jest wymagane do utworzenia triangulacji, lecz jej dodanie tworzy nową, poprawną triangulację. Drugi przykład wymaga dodania jej aby zoptymalizować kąty.
 
 \begin{figure}[ht!]
 \centering
@@ -539,7 +547,7 @@ Jak pamiętamy, \emph{Triangulacja Delaunay} ma~na~celu maksymalizację minimaln
 
 W~poprzednim rozdziale opisaliśmy optymalny sposób wyliczania \emph{Triangulacji Delaunay} dla przypadku dwuwymiarowego. Niestety, w~trzech wymiarach metoda ta~nie~zadziała, ponieważ wykonanie operacji \emph{flip edge} nie jest możliwe - ściana dzieląca może być zamieniona na inną w~dwóch różnych płaszczyznach, lub też dwa czworościany muszą zostać zamienione na~trzy inne. Z~tego powodu do~obliczania triangulacji używać będziemy algorytmu Bowyera-Watsona. Podobnie jak poprzednio, jest to~algorytm inkrementacyjny i~losowy. Jest on~bardziej złożony obliczeniowo, można go~jednak stosować w~dowolnej, $n$-wymiarowej przestrzeni.
 
-Tak jak poprzednio, obliczenia zaczynamy od~dodania supersympleksu zawierającego w sobie wszystkie punkty ze~zbioru~$P$. W~przypadku trójwymiarowym jest to~czworościan. Następnie w~każdym kroku algorytmu, do bierzącej triangulacji dodajemy jeden, losowo wybrany punkt $p_{r} \in P$. Aby zbudować poprawną triangulację, wyszukujemy wszystkie czworościany, dla których punkt~$p_{r}$ zawiera się w~kuli opisanej na~tym czworościanie. Każdy z~dopasowanych czworościanów jest usuwany z~triangulacji, a~jego ściany dodawane są~do~zbioru~$\mathcal{W}$. Jeżeli dana ściana znajduje się już w~tym zbiorze, to~zamiast dodawać, jest ona z~niego usuwana. W~ten sposób tworzymy pustą przestrzeń wewnątrz triangulacji zawierającą punkt $p_{r}$. Musimy teraz dodać do niej nowe czworościany, po jednym na~każdą ścianę znajdującą się w~$\mathcal{W}$, łącząc je z nowo dodanym punktem.
+Tak jak poprzednio, obliczenia zaczynamy od~dodania supersympleksu zawierającego w sobie wszystkie punkty ze~zbioru~$P$. W~przypadku trójwymiarowym jest to~czworościan. Następnie w~każdym kroku algorytmu, do bieżącej triangulacji dodajemy jeden, losowo wybrany punkt $p_{r} \in P$. Aby zbudować poprawną triangulację, wyszukujemy wszystkie czworościany, dla których punkt~$p_{r}$ zawiera się w~kuli opisanej na~tym czworościanie. Każdy z~dopasowanych czworościanów jest usuwany z~triangulacji, a~jego ściany dodawane są~do~zbioru~$\mathcal{W}$. Jeżeli dana ściana znajduje się już w~tym zbiorze, to~zamiast dodawać, jest ona z~niego usuwana. W~ten sposób tworzymy pustą przestrzeń wewnątrz triangulacji zawierającą punkt $p_{r}$. Musimy teraz dodać do niej nowe czworościany, po jednym na~każdą ścianę znajdującą się w~$\mathcal{W}$, łącząc je z nowo dodanym punktem.
 
 Wadą tego algorytmu jest~to, że~nie traktuje on~dodatkowych wierzchołków supersympleksu w~specjalny sposób, przez co~zewnętrzne krawędzie właściwej triangulacji mogą układać się~nieprawidłowo. Aby to~naprawić, należy usunąć te~wierzchołki oraz przyległe do~nich krawędzie. Potem musimy wyszukać otwarte czworościany i~dodać do~nich brakujące fragmenty.
 
@@ -547,11 +555,11 @@ Wadą tego algorytmu jest~to, że~nie traktuje on~dodatkowych wierzchołków sup
 
 \subsection{Właściwości}
 
-Podobnie jak w~przypadku triangulacji, \emph{Diagram Voronoi} może być zastosowany w~$n$-wymiarowej przestrzeni. Dla przypadku trójwymiarowego nie ma większych różnic, poza oczywistym dodaniem kolejnego wymiaru. Zbiory najbliższych punktów dla każdego z~centrów ze~zbioru~$P$ będzie bryłą wypukłą, których ściany zbudowane są~z~wielokątów. Przedstawić je~można jako część współną zbioru półprzestrzeni ograniczonych płaszczyznami.
+Podobnie jak w~przypadku triangulacji, \emph{Diagram Voronoi} może być zastosowany w~$n$-wymiarowej przestrzeni. Dla przypadku trójwymiarowego nie ma większych różnic, poza oczywistym dodaniem kolejnego wymiaru. Zbiory najbliższych punktów dla każdego z~centrów ze~zbioru~$P$ utworzą bryły wypukłe, których ściany zbudowane są~z~wielokątów. Przedstawić je~można jako część współną zbioru półprzestrzeni ograniczonych płaszczyznami.
 
 \subsection{Obliczanie}
 
-Wraz z~dodaniem trzeciego wymiaru znany nam algorytm Fortune nadal działa, jednak ze~względu na~potrzebę śledzenia plaży zbudowanej z~paraboloid zamiast parabol wykrywanie odpowiednich zdażeń komplikuje się. Kolejnym problemem jest śledzenie nie tylko rysowanych linii, ale także trójkątów. Z~tego powodu na potrzeby tej pracy zastosujemy prostszą metodę, a~mianowicie wspomniane wcześniej przecięcie półprzestrzeni.
+Wraz z~dodaniem trzeciego wymiaru znany nam algorytm Fortune nadal działa, jednak ze~względu na~potrzebę śledzenia plaży zbudowanej z~paraboloid zamiast parabol wykrywanie odpowiednich zdarzeń komplikuje się. Kolejnym problemem jest śledzenie nie tylko rysowanych linii, ale także trójkątów. Z~tego powodu na potrzeby tej pracy zastosujemy prostszą metodę, a~mianowicie wspomniane wcześniej przecięcie półprzestrzeni.
 
 Potencjalnym problemem przy tym podejściu jest możliwość utworzenia nieograniczonych komórek, dlatego jako bazy użyjemy prostopadłościanu obejmującego wystarczająco dużą przestrzeń. Tak przygotowaną figurę będziemy przecinać z~półprzestrzeniami tworząc pojedyńczą komórkę diagramu. Operację tę~powtarzamy dla każdego z~punktów ze~zbioru~$P$.
 
@@ -591,7 +599,7 @@ W~celu obliczenia triangulacji punktów podziału naszego obiektu, aplikacja kor
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=140mm]{images/app1.png}
+\includegraphics[width=140mm]{images/app1_1.png}
 \caption{Triangulacja wygenerowana przez aplikację}
 \label{apptriangulation}
 \end{figure}
@@ -612,7 +620,7 @@ jeżeli ściana posiada ilość użyć równą~0 oznacza~to, że ściana ta~rozd
 ściana posiadająca ilość użyć równą~2 nigdy nie powinna się tu~pojawić, gdyż jedna ściana może być użyta przez conajwyżej dwa czworościany
 \end{itemize}
 
-Dodatkowo, w~czasie budowania nowych czworościanów sprawdzamy, czy nowodawane ściany nie zostały już utworzone poprzednio i~reużywamy je.
+Dodatkowo, w~czasie budowania nowych czworościanów sprawdzamy, czy nowo dodawane ściany nie zostały już utworzone poprzednio i~używamy ich ponownie.
 
 \section{Obliczanie Diagramu}
 
@@ -620,7 +628,7 @@ Obliczanie \emph{Diagramu Voronoi} zrealizowane zostało z~użyciem metody opisa
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=140mm]{images/app2.png}
+\includegraphics[width=140mm]{images/app2_1.png}
 \caption{Komórka Voronoi obliczona przez aplikację}
 \label{appcell}
 \end{figure}
@@ -645,9 +653,9 @@ lista ścian, każda z~nich posiada wskaźnik na~półkrawędź będącą począ
 
 W~każdym kroku algorytmu wybierany jest jedno z~centrów ze~zbioru~$P$, po~czym następuje iteracja po~pozostałych punktach z~tego zbioru. Dla każdej pary obliczane jest równanie płaszczyzny przecinającej odcinek je~łączący pod kątem prostym i~znajdujący się na~jego środku.
 
-Płaszczyzna ta~użyta zostaje do~przecięcia bierzącej siatki komórki. Część znajdująca się po stronie centrum zostaje zachowana, pozostała jest odrzucana. Przeciętą siatkę przechowujemy w tymczasowych strukturach danych, których zawartość przepisaywana jest do obiektu komórki po zakończeniu bierzącego cięcia. Zanim jednak dokonywane jest przecięcie, sprawdzane zostają dwa istotne warunki: jeżeli cała bryła znajduje się~po~stronie centrum, jej struktura nie jest zmieniana, jeżeli natiomiast cała bryła znajduje się za~płaszczyzną tnącą, zamiast cięcia jest ona odrzucana w~całości. Kryterium to~sprawdzane jest poprzez określenie strony, po~której znajdują się wszystkie wierzchołki bryły.
+Płaszczyzna ta~użyta zostaje do~przecięcia bieżącej siatki komórki. Część znajdująca się po stronie centrum zostaje zachowana, pozostała jest odrzucana. Przeciętą siatkę przechowujemy w tymczasowych strukturach danych, których zawartość przepisaywana jest do obiektu komórki po zakończeniu bieżącego cięcia. Zanim jednak dokonywane jest przecięcie, sprawdzane zostają dwa istotne warunki: jeżeli cała bryła znajduje się~po~stronie centrum, jej struktura nie jest zmieniana, jeżeli natomiast cała bryła znajduje się za~płaszczyzną tnącą, zamiast cięcia jest ona odrzucana w~całości. Kryterium to~sprawdzane jest poprzez określenie strony, po~której znajdują się wszystkie wierzchołki bryły.
 
-Kiedy stwierdzimy, że~potrzebne jest cięcie, wykonywane jest kilka operacji. Pierwszą z~nich jest wyszukanie krawędzi przecinających płaszczyznę i~zapisanie ich w~tymczasowej tablicy. Drugą jest dokonanie cięcia poszczególnych ścian bierzącej siatki. Następnie wykonane zostaje dodanie nowej ściany na~płaszczyźnie tnącej. Cięcie kończy się na~przepisaniu zawartości struktur (wierzchołków, półkrawędzi, krawędzi i~ścian) tymczasowych do~obiektu komórki.
+Kiedy stwierdzimy, że~potrzebne jest cięcie, wykonywane jest kilka operacji. Pierwszą z~nich jest wyszukanie krawędzi przecinających płaszczyznę i~zapisanie ich w~tymczasowej tablicy. Drugą jest dokonanie cięcia poszczególnych ścian bieżącej siatki. Następnie wykonane zostaje dodanie nowej ściany na~płaszczyźnie tnącej. Cięcie kończy się na~przepisaniu zawartości struktur (wierzchołków, półkrawędzi, krawędzi i~ścian) tymczasowych do~obiektu komórki.
 
 Wyszukanie przeciętych krawędzi jest trywialne i~sprowadza się do przejrzenia listy krawędzi i~sprawdzenia, czy ich wierzchołki leżą po przeciwnych stronach płaszczyzny.
 
@@ -655,7 +663,7 @@ Wyszukanie przeciętych krawędzi jest trywialne i~sprowadza się do przejrzenia
 
 Operację przecięcia ściany rozpoczynamy podobnie do~przecięcia całej figury, czyli od~sprawdzenia, czy cała ściana nie leży przed lub za~płaszczyzną tnącą. W~takim przypadku odpowiednio zachowujemy lub odrzucamy całą ścianę. Jeżeli jednak potrzebne jest cięcie, tworzymy nową, tymczasową ścianę, która narazie jest pusta. Zaczynając od~półkrawędzi, na~którą wskazuje oryginalna ściana iterujemy po~łańcuchu. Do zapamiętania po~której stronie płaszczyzny jesteśmy używamy flagi \code{side}, którą inicjujemy poprzez sprawdzenie po~której stronie płaszczyzny znajduje się wierzchołek pierwszej półkrawędzi.
 
-Iterując po~łańcuchu półkrawędzi, jeżeli flaga \code{side} zawiera wartość \code{true}, przepisujemy bierzącą półkrawędź do~tymczasowej ściany. W~przeciwnym wypadku, półkrawędź jest pomijana. Następnie, niezależnie od stanu flagi, sprawdzamy, czy bierząca półkrawędź jest przecięta przez płaszczyznę. Jeżeli tak, to~do~tymczasowej ściany dodajemy dodatkową krawędź oraz odwracamy wartość flagi. Wierzchołkiem dla dodatkowej krawędzi jest punkt przecięcia krawędzi oryginalnej ściany oraz płaszczyzny. Punkt ten dodawany jest do~listy \code{newFaceVertices}.
+Iterując po~łańcuchu półkrawędzi, jeżeli flaga \code{side} zawiera wartość \code{true}, przepisujemy bierzącą półkrawędź do~tymczasowej ściany. W~przeciwnym wypadku, półkrawędź jest pomijana. Następnie, niezależnie od stanu flagi, sprawdzamy, czy bieżąca półkrawędź jest przecięta przez płaszczyznę. Jeżeli tak, to~do~tymczasowej ściany dodajemy dodatkową krawędź oraz odwracamy wartość flagi. Wierzchołkiem dla dodatkowej krawędzi jest punkt przecięcia krawędzi oryginalnej ściany oraz płaszczyzny. Punkt ten dodawany jest do~listy \code{newFaceVertices}.
 
 Aby zbudować poprawny łańcuch, w~zmiennej \code{lastCreatedEdge} przechowujemy ostatnio dodaną półkrawędź. Kiedy dodawana jest nowa półkrawędź, łączymy ją~z~przechowywaną w zmiennej, po~czym ustawiamy wartość zmiennej na~dodaną półkrawędź.
 
@@ -693,7 +701,7 @@ W~algorytmie określamy punkty jako znajdujące się \emph{przed} lub \emph{za} 
 
 \subsection{Tworzenie Nowej Ściany}
 
-Do omówienia pozostała operacja stworzenia nowej ściany znajdującej się~na~płaszczyźnie tnącej. Służy do~tego wspomniana wcześniej lista wierzchołków \code{newFaceVertices}. Najpierw jednak należy dokonać parowania półkrawędzi znajdujących się na~tymczasowej liście. Przeglądając listę, dla każdej krawędzi zaczynającej się~w~punkcie~$A$, wskazującej na~półkrawędź o~wierzchołku~$B$ i~nie posiadającą jeszcze pary, wyszukujemy w~tej samej liście półkrawędzi o~wierzchołku~$B$ i~wskazującą na~półkrawędź o~wierzchołku~$A$. Łączymy te~półkrawędzi tworząc kompletną krawędź.
+Do omówienia pozostała operacja stworzenia nowej ściany znajdującej się~na~płaszczyźnie tnącej. Służy do~tego wspomniana wcześniej lista wierzchołków \code{newFaceVertices}. Najpierw jednak należy dokonać parowania półkrawędzi znajdujących się na~tymczasowej liście. Przeglądając listę, dla każdej krawędzi zaczynającej się~w~punkcie~$A$, wskazującej na~półkrawędź o~wierzchołku~$B$ i~nie posiadającą jeszcze pary, wyszukujemy w~tej samej liście półkrawędzi o~wierzchołku~$B$ i~wskazującą na~półkrawędź o~wierzchołku~$A$. Łączymy te~półkrawędzie tworząc kompletną krawędź.
 
 Gdy wszystkie możliwe półkrawędzie zostały już sparowane, przechodzimy do właściwego tworzenia ściany. Dodajemy nowy obiekt \code{VoronoiFace} do~listy tymczasowej, a~następnie tworzymy nowe półkrawędzie korzystając z~wierzchołków \code{newFaceVertices} dodając je~do~listy \code{newHalfEdges}. Każda z~nich należy do~nowej ściany, nie są~one jednak połączone w~zamknięty łańcuch. Aby tego dokonać skorzystamy z~faktu, że wszystkie ściany przyległe do~nowej składają się z~kompletnych łańcuchów, oraz z~tego, że~wszystkie możliwe krawędzie zostały sparowane.
 
@@ -740,7 +748,7 @@ Skoro wiemy już jak podzielić prostopadłościan na~poszczególne komórki \em
 
 \begin{figure}[ht!]
 \centering
-\includegraphics[width=140mm]{images/app3.png}
+\includegraphics[width=140mm]{images/app3_1.png}
 \caption{Bryła podzielona w aplikacji na pięć fragmentów}
 \label{newpointposition}
 \end{figure}
@@ -759,13 +767,13 @@ Jak nietrudno zauważyć, przedstawiona w~poprzednim rozdziale implementacja pod
 
 Pośredni diagram dzielący przestrzeń dookoła obiektu także nie jest niezbędny i~istnieje on~jedynie w~celach prezentacyjnych. Pozwala to~zwizualizować kolejne etapy podziału bryły, jednak z~punktu widzenia ostatecznego wyniku może zostać pominięte.
 
-Sama implementacja także może zostać zoptymalizowana pod kątem zużycia pamięci oraz czasu procesora. Testowana była ona na maszynie posiadającej dwurdzeniowy procesor taktowany zegarem 1,2GHz, 2GB pamięci ram oraz układ graficzny wspierający standard OpenGL w~wersji 1.3. Aby móc generować podziały w~czasie rzeczywistym, nie można użyć więcej niż 10 centrów na~raz, co~w~praktycznych zastosowaniach może nie być wystarczające.
+Sama implementacja także może zostać zoptymalizowana pod kątem zużycia pamięci oraz czasu procesora. Testowana była ona na maszynie posiadającej dwurdzeniowy procesor taktowany zegarem 1,2GHz, 2GB pamięci ram oraz układ graficzny wspierający standard OpenGL w~wersji 1.3. Aby móc generować podziały w~czasie rzeczywistym, nie można użyć więcej niż 10 centrów w~jednym podziale, co~w~praktycznych zastosowaniach może nie być wystarczające.
 
 Warto także zauważyć, że~podczas obliczania samego diagramu, operacje dla każdego z~centrów są~całkowicie niezależne. Jest to~bardzo dobra okazja do~zrównoleglenia działania programu poprzez zastosowanie technologii CUDA lub podobnej. Równoległe obliczenia dla każdego z~fragmentów powinno pozwolić na~ogromne zwiększenie wydajności i~umożliwić praktyczne zastosowanie zaprezentowanej metody w~czasie rzeczywistym.
 
 \section{Inne metody podziału}
 
-Podział bryły z~użyciem diagramu pozwala na~stworzenie realistycznych fragmentów, z~których da~się spowrotem złożyć pierwotny obiekt. Jednak nie zawsze jest to~dla nas niezbędne. W~przypadku, kiedy musimy w~krótkim czasie podzielić bardzo dużo obiektów, zwłaszcza bardzo małych, wydajność jest ważniejsza od~dokładności.
+Podział bryły z~użyciem diagramu pozwala na~stworzenie realistycznych fragmentów, z~których da~się z~powrotem złożyć pierwotny obiekt. Jednak nie zawsze jest to~dla nas niezbędne. W~przypadku, kiedy musimy w~krótkim czasie podzielić bardzo dużo obiektów, zwłaszcza bardzo małych, wydajność jest ważniejsza od~dokładności.
 
 Jako alternatywę zastosować możemy podział poprzez wysiew kostek lub kul. Obiekt wypełniony zostaje równomiernie rozłożonymi punktami, a~następnie zastępowany jest on~kostkami o~środkach w~tych punktach. W~ten sposób możemy szybko uzyskać bardzo drobny podział zachowujący obiętość zbliżoną do~oryginalnego obiektu.
 
