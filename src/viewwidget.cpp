@@ -331,6 +331,43 @@ void ViewWidget::drawFragment()
 
             glEnd();
         }
+
+//        for (int i = 0; i < cell->faces.size(); i++) {
+//            face = cell->faces.at(i);
+//            halfEdgeHandler = face->halfEdge;
+
+//            do {
+//                if (halfEdgeHandler == NULL) {
+//                    break;
+//                }
+//                if (halfEdgeHandler->next == NULL) {
+//                    break;
+//                }
+
+//                if (halfEdgeHandler->pair == NULL) {
+//                    glColor3f(0, 0,255.0);
+//                    glBegin(GL_LINE_LOOP);
+
+//                    vertexHandler = halfEdgeHandler->v;
+//                    vertex = vertexHandler->coords;
+//                    if (vertex == NULL) {
+//                        break;
+//                    }
+//                    glVertex3f(vertex[0], vertex[1], vertex[2]);
+
+//                    vertexHandler = halfEdgeHandler->next->v;
+//                    vertex = vertexHandler->coords;
+//                    if (vertex == NULL) {
+//                        break;
+//                    }
+//                    glVertex3f(vertex[0], vertex[1], vertex[2]);
+
+//                    glEnd();
+//                }
+
+//                halfEdgeHandler = halfEdgeHandler->next;
+//            } while (halfEdgeHandler != face->halfEdge);
+//        }
     }
 }
 

@@ -441,6 +441,8 @@ void VoronoiCell::buildCutFace(QList<VoronoiHalfEdge *> * newHalfEdges, QList<Vo
     VoronoiFace * newFace = new VoronoiFace();
     newFace->plane = plane;
 
+    std::cout << "Building cut face" << std::endl;
+
     for (int i = 0; i < newFaceVertices->size(); i++) {
         vertexHandler = newFaceVertices->at(i);
 
@@ -500,6 +502,23 @@ void VoronoiCell::buildCutFace(QList<VoronoiHalfEdge *> * newHalfEdges, QList<Vo
         }
     }
 
+//    for (int i = 0; i < newHalfEdges->size(); i++) {
+//        halfEdgeHandler = newHalfEdges->at(i);
+//        if (halfEdgeHandler->pair == NULL) {
+//            std::cout << "unpaired edge " << i << std::endl;
+//            if (newFaceVertices->contains(halfEdgeHandler->v)) {
+//                VoronoiHalfEdge * wtf = halfEdgeHandler;
+//                do {
+//                    std::cout << wtf << " " << halfEdgeHandler << " " << wtf->v->coords[0] << " " << wtf->v->coords[1] << " " << wtf->v->coords[2]  << std::endl;
+//                    wtf = wtf->next;
+//                } while (wtf != halfEdgeHandler);
+//                std::cout << halfEdgeHandler->v << " " << halfEdgeHandler->next->v << std::endl;
+//                std::cout << halfEdgeHandler << " " << halfEdgeHandler->next << std::endl;
+//                std::cout << "new face vertex " << halfEdgeHandler->face << std::endl;
+//            }
+//        }
+//    }
+
     //link new half edges into chain loop
     for (int i = 0; i < newFaceHalfEdges.size(); i++) {
         halfEdgeHandler = newFaceHalfEdges.at(i);
@@ -509,6 +528,10 @@ void VoronoiCell::buildCutFace(QList<VoronoiHalfEdge *> * newHalfEdges, QList<Vo
         halfEdgeHandler = halfEdgeHandler->pair; //3
         halfEdgeHandler = halfEdgeHandler->next; //4
         halfEdgeHandler = halfEdgeHandler->pair; //5
+        if (halfEdgeHandler == NULL) {
+            std::cout << "ups..." << std::endl;
+            continue;
+        }
         halfEdgeHandler->next = newFaceHalfEdges.at(i);
     }
     newFaces->push_back(newFace);
@@ -587,6 +610,7 @@ void VoronoiCell::splitMesh(VoronoiPlane * p)
 
     // cut each face separately
     for(int i = 0; i < this->faces.size(); i++) {
+        //std::cout << "Spliting face " << i << std::endl;
         this->splitFace(this->faces.at(i), p, &newVertices, &newHalfEdges, &newFaces, splitEdges, &newFaceVertices);
     }
 

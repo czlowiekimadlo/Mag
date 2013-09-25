@@ -661,6 +661,8 @@ void SolidObject::createVoronoi()
     VoronoiVertex * v1, * v2, * n, *m;
     VoronoiPlane *p;
 
+    std::cout << "Creating cells" << std::endl;
+
     v1 = new VoronoiVertex();
     v2 = new VoronoiVertex();
 
@@ -710,6 +712,7 @@ void SolidObject::createFragments()
     VoronoiCell * fragment;
     VoronoiFace * face;
 
+    std::cout << "Creating fragments" << std::endl;
 
     while (!this->fragments.empty()) {
         cell = this->fragments.first();
@@ -719,6 +722,8 @@ void SolidObject::createFragments()
 
     for (int i = 0; i < this->vCells.size(); i++)
     {
+        std::cout << "Creating fragment from cell " << i << std::endl;
+
         cell = this->vCells.at(i);
 
         fragment = new VoronoiCell();
@@ -728,7 +733,7 @@ void SolidObject::createFragments()
         for (int j = 0; j < cell->faces.size(); j++) {
             face = cell->faces.at(j);
             if (face->plane != NULL) {
-                std::cout << i << " " << j << std::endl;
+                //std::cout << i << " " << j << std::endl;
                 fragment->splitMesh(face->plane->getCopy());
             }
         }
