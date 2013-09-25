@@ -30,6 +30,7 @@ public:
     QList<float *> BBvertices;
     QList< QList<int> * > BBfaces;
     float sidesSizes[3];
+    float center[3];
 
     QList<float *> randomPoints;
     QList<float *> superTetraVertices;

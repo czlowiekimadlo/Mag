@@ -16,9 +16,12 @@ ViewWidget::ViewWidget() : QGLWidget()
     this->showTriangulationNodes = false;
     this->showVoronoi = false;
     this->showFragments = false;
+    this->showFullFaces = false;
     this->currentObject = 0;
     this->voronoiCell = 0;
     this->fragment = 0;
+
+    this->lastCenter[0] = this->lastCenter[1] = this->lastCenter[2] = 0.0;
 }
 
 ViewWidget::~ViewWidget()
@@ -110,7 +113,17 @@ void ViewWidget::drawModel()
             } else {
                 glColor3f(0, 0, 255.0);
             }
-            glBegin(GL_LINE_LOOP);
+            if (this->showFullFaces) {
+                glBegin(GL_POLYGON);
+                if (i == this->currentObject) {
+                    glColor3f(0, 0, (float)(j + 5) / (float)(object->faces.size() + 10));
+                } else {
+                    glColor3f((float)(j + 5) / (float)(object->faces.size() + 10),0,0);
+                }
+            } else {
+                glBegin(GL_LINE_LOOP);
+            }
+
             face = object->faces.at(j);
             for (int k = 0; k < face->size(); k++) {
                 vertex = object->vertices.at(face->at(k) - 1);
@@ -332,42 +345,42 @@ void ViewWidget::drawFragment()
             glEnd();
         }
 
-//        for (int i = 0; i < cell->faces.size(); i++) {
-//            face = cell->faces.at(i);
-//            halfEdgeHandler = face->halfEdge;
+        //        for (int i = 0; i < cell->faces.size(); i++) {
+        //            face = cell->faces.at(i);
+        //            halfEdgeHandler = face->halfEdge;
 
-//            do {
-//                if (halfEdgeHandler == NULL) {
-//                    break;
-//                }
-//                if (halfEdgeHandler->next == NULL) {
-//                    break;
-//                }
+        //            do {
+        //                if (halfEdgeHandler == NULL) {
+        //                    break;
+        //                }
+        //                if (halfEdgeHandler->next == NULL) {
+        //                    break;
+        //                }
 
-//                if (halfEdgeHandler->pair == NULL) {
-//                    glColor3f(0, 0,255.0);
-//                    glBegin(GL_LINE_LOOP);
+        //                if (halfEdgeHandler->pair == NULL) {
+        //                    glColor3f(0, 0,255.0);
+        //                    glBegin(GL_LINE_LOOP);
 
-//                    vertexHandler = halfEdgeHandler->v;
-//                    vertex = vertexHandler->coords;
-//                    if (vertex == NULL) {
-//                        break;
-//                    }
-//                    glVertex3f(vertex[0], vertex[1], vertex[2]);
+        //                    vertexHandler = halfEdgeHandler->v;
+        //                    vertex = vertexHandler->coords;
+        //                    if (vertex == NULL) {
+        //                        break;
+        //                    }
+        //                    glVertex3f(vertex[0], vertex[1], vertex[2]);
 
-//                    vertexHandler = halfEdgeHandler->next->v;
-//                    vertex = vertexHandler->coords;
-//                    if (vertex == NULL) {
-//                        break;
-//                    }
-//                    glVertex3f(vertex[0], vertex[1], vertex[2]);
+        //                    vertexHandler = halfEdgeHandler->next->v;
+        //                    vertex = vertexHandler->coords;
+        //                    if (vertex == NULL) {
+        //                        break;
+        //                    }
+        //                    glVertex3f(vertex[0], vertex[1], vertex[2]);
 
-//                    glEnd();
-//                }
+        //                    glEnd();
+        //                }
 
-//                halfEdgeHandler = halfEdgeHandler->next;
-//            } while (halfEdgeHandler != face->halfEdge);
-//        }
+        //                halfEdgeHandler = halfEdgeHandler->next;
+        //            } while (halfEdgeHandler != face->halfEdge);
+        //        }
     }
 }
 
@@ -531,6 +544,10 @@ void ViewWidget::keyPressEvent(QKeyEvent *e)
             this->showTriangulationNodes = !this->showTriangulationNodes;
             this->updateGL();
             break;
+        case Qt::Key_M:
+            this->showFullFaces = !this->showFullFaces;
+            this->updateGL();
+            break;
         case Qt::Key_Escape:
             exit(0);
             break;
@@ -553,6 +570,10 @@ void ViewWidget::splitCurrentObject()
     SolidObject * object;
     object = this->objects.at(this->currentObject);
 
+    this->lastCenter[0] = object->center[0];
+    this->lastCenter[1] = object->center[1];
+    this->lastCenter[2] = object->center[2];
+
     newObjects = object->split();
 
     if (!newObjects->empty()) {
@@ -560,9 +581,44 @@ void ViewWidget::splitCurrentObject()
 
         while (!newObjects->empty()) {
             this->objects.push_back(newObjects->front());
+            this->moveObject(newObjects->front());
             newObjects->pop_front();
         }
     }
 
     delete newObjects;
 }
+
+void ViewWidget::moveObject(SolidObject * object)
+{
+    float vector[3];
+    float * holder;
+
+    for (int i = 0; i < 3; i++) {
+        vector[i] = (object->center[i] - this->lastCenter[i]) * 3;
+        object->center[i] = object->center[i] + vector[i];
+    }
+
+    for (int i = 0; i < object->vertices.size(); i++) {
+        holder = object->vertices.at(i);
+        holder[0] = holder[0] + vector[0];
+        holder[1] = holder[1] + vector[1];
+        holder[2] = holder[2] + vector[2];
+    }
+
+    for (int i = 0; i < object->BBvertices.size(); i++) {
+        holder = object->BBvertices.at(i);
+        holder[0] = holder[0] + vector[0];
+        holder[1] = holder[1] + vector[1];
+        holder[2] = holder[2] + vector[2];
+    }
+
+    for (int i = 0; i < object->superTetraVertices.size(); i++) {
+        holder = object->superTetraVertices.at(i);
+        holder[0] = holder[0] + vector[0];
+        holder[1] = holder[1] + vector[1];
+        holder[2] = holder[2] + vector[2];
+    }
+}
+
+

@@ -567,6 +567,13 @@ Potencjalnym problemem przy tym podejściu jest możliwość utworzenia nieogran
 
 W~niniejszym rozdziale omówimy praktyczną implementację \emph{Triangulacji Delaunay} oraz \emph{Diagramu Voronoi}. Następnie pokażemy jak zastosować je~w~praktyce do~podziału bryły definiowanej poprzez siatkę wielokątów na części.
 
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=140mm]{images/app4.png}
+\caption{Przykład trzypoziomowego podziału obiektu}
+\label{appdivisionlevels}
+\end{figure}
+
 \section{Wstępna Specyfikacja}
 
 Przykładowa implementacja dołączona do~tej pracy napisana została w~języku~C++. Do wizualizacji użyta została biblioteki OpenGL oraz wspomagającą jej użycie GLU. Aby zapewnić interfejs użytkownika dla kontekstu OpenGL osadziliśmy go~w~oknie stworzonym z~użyciem biblioteki~QT w~wersji~4. Sama implementacja algorytmów także korzysta z~podstawowych struktur danych udostępnianych przez QT, takich, jak listy, zaawansowane łańcuchy znakowe i~obsługa wejścia plików.

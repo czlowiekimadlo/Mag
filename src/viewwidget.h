@@ -26,9 +26,12 @@ public:
     bool showTriangulationNodes;
     bool showVoronoi;
     bool showFragments;
+    bool showFullFaces;
     int currentObject;
     int voronoiCell;
     int fragment;
+
+    float lastCenter[3];
 
 
 protected:
@@ -47,6 +50,7 @@ protected:
     void drawVoronoi();
     void drawFragment();
     void splitCurrentObject();
+    void moveObject(SolidObject *);
 
     void mousePressEvent(QMouseEvent *);
     void mouseMoveEvent(QMouseEvent *);

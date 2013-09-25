@@ -416,6 +416,11 @@ void SolidObject::processModel(float minX, float maxX, float minY, float maxY, f
     face->push_back(3);
     face->push_back(4);
     this->superTetraFaces.push_back(face);
+
+    // calculate center of bounding box
+    this->center[0] = (maxX + minX) / 2;
+    this->center[1] = (maxY + minY) / 2;
+    this->center[2] = (maxZ + minZ) / 2;
 }
 
 /**
