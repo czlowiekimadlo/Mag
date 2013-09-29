@@ -118,7 +118,7 @@ void ViewWidget::drawModel()
                 if (i == this->currentObject) {
                     glColor3f(0, 0, (float)(j + 5) / (float)(object->faces.size() + 10));
                 } else {
-                    glColor3f((float)(j + 5) / (float)(object->faces.size() + 10),0,0);
+                    glColor3f((float)(j + 5) / (float)(object->faces.size() + 10), object->colour[0], object->colour[1]);
                 }
             } else {
                 glBegin(GL_LINE_LOOP);

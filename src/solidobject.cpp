@@ -2,6 +2,7 @@
 
 SolidObject::SolidObject()
 {
+    this->colour[0] = this->colour[1] = 0.0;
 }
 
 SolidObject::~SolidObject() {
@@ -765,6 +766,13 @@ QList<SolidObject *> * SolidObject::split()
 
         object = new SolidObject();
         object->loadModel(cell);
+        if (this->colour[0] > 0.0) {
+            object->colour[0] = 0.0;
+            object->colour[1] = 255.0;
+        } else {
+            object->colour[0] = 255.0;
+            object->colour[1] = 0.0;
+        }
 
         objects->push_back(object);
     }
